@@ -1,0 +1,9 @@
+#!/bin/sh
+
+dafny="/Users/nudzhang/installations/dafny-4.2.0/dafny /timeLimit:20 /compile:0  /noNLarith /autoTriggers:1 /vcsCores:10"
+
+files="../../lib/UtilitiesLibrary.dfy ../../lib/MonotonicityLibrary.dfy ../types.dfy ../hosts.dfy distributedSystem.dfy spec.dfy messageInvariants.dfy applicationProof.dfy"
+
+echo "Verifying $files"
+
+time $dafny $files

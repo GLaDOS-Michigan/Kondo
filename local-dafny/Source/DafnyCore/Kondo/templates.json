@@ -1,0 +1,411 @@
+{
+  "InitImpliesMonotonicityInv": 
+    [ 
+      "lemma InitImpliesMonotonicityInv(c: Constants, v: Variables)",
+      "  requires Init(c, v)",
+      "  ensures MonotonicityInv(c, v)",
+      "{}"
+    ],
+  "InitImpliesMessageInvHeader":
+    [
+      "lemma InitImpliesMessageInv(c: Constants, v: Variables)",
+      "  requires Init(c, v)",
+      "  ensures MessageInv(c, v)",
+      "{",
+      "  InitImpliesValidVariables(c, v);"
+    ],
+  "MonotonicityInvInductive":
+    [
+      "lemma MonotonicityInvInductive(c: Constants, v: Variables, v': Variables)",
+      "  requires MonotonicityInv(c, v)",
+      "  requires Next(c, v, v')",
+      "  ensures MonotonicityInv(c, v')",
+      "{",
+      "  VariableNextProperties(c, v, v');",
+      "}"
+    ],
+  "MessageInvInductiveHeader":
+    [
+      "lemma MessageInvInductive(c: Constants, v: Variables, v': Variables)",
+      "  requires MessageInv(c, v)",
+      "  requires Next(c, v, v')",
+      "  ensures MessageInv(c, v')"
+    ],
+  "NetworkModule":
+    [
+      "module Network {",
+      "  import opened Types",
+      "",
+      "  datatype Variables = Variables(sentMsgs:set<Message>)",
+      "",
+      "  ghost predicate Init(v: Variables) {",
+      "    && v.sentMsgs == {}",
+      "  }",
+      "",
+      "  ghost predicate Next(v: Variables, v': Variables, msgOps: MessageOps)",
+      "  {",
+      "    && (msgOps.recv.Some? ==> msgOps.recv.value in v.sentMsgs)",
+      "    && v'.sentMsgs ==",
+      "      v.sentMsgs + if msgOps.send.None? then {} else { msgOps.send.value }",
+      "  }",
+      "}  // end module Network"
+    ],
+  "DatatypeVariables":
+    [
+      "datatype Variables = Variables(",
+      "  history: seq<Hosts>,",
+      "  network: Network.Variables",
+      ") {",
+      "",
+      "  ghost predicate ValidHistoryIdx(i: int) {",
+      "    0 <= i < |history|",
+      "  }",
+      "",
+      "  ghost predicate ValidHistoryIdxStrict(i: int) {",
+      "    0 <= i < |history|-1",
+      "  }",
+      "",
+      "  ghost predicate WF(c: Constants) {",
+      "    && c.WF()",
+      "    && 0 < |history|",
+      "    && (forall i | ValidHistoryIdx(i) :: history[i].WF(c))",
+      "  }",
+      "",
+      "  ghost function Last() : (h: Hosts)",
+      "    requires 0 < |history|",
+      "    ensures h == history[|history|-1]",
+      "    ensures h == History(|history|-1)",
+      " {",
+      "    UtilitiesLibrary.Last(history)",
+      "  }",
+      "",
+      "  ghost function History(i: int) : (h: Hosts)",
+      "    requires ValidHistoryIdx(i)",
+      "    ensures h == history[i]",
+      "  {",
+      "    history[i]",
+      "  }",
+      "}  // end datatype Variables"
+    ],
+  "InitHostsHeader":
+    [
+      "ghost predicate InitHosts(c: Constants, h: Hosts)",
+      "  requires h.WF(c)",
+      "{"
+    ],
+  "Init":
+    [
+      "ghost predicate Init(c: Constants, v: Variables)",
+      "{",
+      "  && v.WF(c)",
+      " && |v.history| == 1",
+      "  && InitHosts(c, v.History(0))",
+      "  && Network.Init(v.network)",
+      "}"
+    ],
+  "NextStepHeader":
+    [
+      "ghost predicate NextStep(c: Constants, h: Hosts, h': Hosts, n: Network.Variables, n': Network.Variables, step: Step)",
+      "  requires h.WF(c) && h'.WF(c)",
+      "{",
+      "  && Network.Next(n, n', step.msgOps)",
+      "  && match step"
+    ],
+  "Next":
+    [
+      "ghost predicate Next(c: Constants, v: Variables, v': Variables)",
+      "{",
+      "  && v.WF(c)",
+      "  && v'.WF(c)",
+      "  && IsSeqExtension(v.history, v'.history)",
+      "  && exists step :: NextStep(c, v.Last(), v'.Last(), v.network, v'.network, step)",
+      "}"
+    ],
+  "VariablePropertiesSeperator":
+    [
+      "/***************************************************************************************",
+      "*                                Variable properties                                   *",
+      "***************************************************************************************/"
+    ],
+  "ValidHistory":
+    [
+      "ghost predicate {:opaque} ValidHistory(c: Constants, v: Variables)",
+      "  requires v.WF(c)",
+      "{",
+      "  InitHosts(c, v.History(0))",
+      "}"
+    ],
+  "ValidVariables":
+    [  
+      "// Bundle of Variable properties",
+      "ghost predicate ValidVariables(c: Constants, v: Variables)",
+      "  requires v.WF(c)",
+      "{",
+      "  && ValidHistory(c, v)",
+      "}"
+    ],
+  "InitImpliesValidVariables":
+    [
+      "lemma InitImpliesValidVariables(c: Constants, v: Variables)",
+      "  requires Init(c, v)",
+      "  ensures ValidHistory(c, v)",
+      "{",
+      "  reveal_ValidHistory();",
+      "}"
+    ],
+  "InvNextValidVariables":
+    [
+      "lemma InvNextValidVariables(c: Constants, v: Variables, v': Variables)",
+      "  requires v.WF(c)",
+      "  requires ValidHistory(c, v)",
+      "  requires Next(c, v, v')",
+      "  ensures ValidHistory(c, v')",
+      "{",
+      "  reveal_ValidHistory();",
+      "  VariableNextProperties(c, v, v');",
+      "}"
+    ],
+  "VariableNextProperties":
+    [
+      "lemma VariableNextProperties(c: Constants, v: Variables, v': Variables)", 
+      "  requires v.WF(c)",
+      "  requires Next(c, v, v')",
+      "  ensures 1 < |v'.history|",
+      "  ensures |v.history| == |v'.history| - 1",
+      "  ensures v.Last() == v.History(|v'.history|-2) == v'.History(|v'.history|-2)",
+      "  ensures forall i | 0 <= i < |v'.history|-1 :: v.History(i) == v'.History(i)",
+      "{",
+      "  assert 0 < |v.history|;",
+      "  assert 1 < |v'.history|;",
+      "}"
+    ],
+    "AuxProofsSeparator":
+    [
+      "/***************************************************************************************",
+      "*                                     Aux Proofs                                       *",
+      "***************************************************************************************/"
+    ],
+    "UniqueKeyInFlight":
+    [
+      "ghost predicate {:trigger KeyInFlightByMessage} UniqueKeyInFlight(c: Constants, v: Variables, k: UniqueKey)",
+      "requires v.WF(c)",
+      "{",
+      "  exists msg :: KeyInFlightByMessage(c, v, msg, k)",
+      "}"
+    ],
+    "DefinitionsSeparator":
+    [
+      "/***************************************************************************************",
+      "*                                     Definitions                                       *",
+      "***************************************************************************************/"
+    ],
+    "InvariantsSeparator":
+    [
+      "/***************************************************************************************",
+      "*                                     Invariants                                       *",
+      "***************************************************************************************/"
+    ],
+    "AtMostOneInFlightMessagePerKey":
+    [
+      "ghost predicate AtMostOneInFlightMessagePerKey(c: Constants, v: Variables)",
+      "  requires v.WF(c)",
+      "{",
+      "  forall k, m1, m2 | KeyInFlightByMessage(c, v, m1, k) && KeyInFlightByMessage(c, v, m2, k)",
+      "  :: m1 == m2",
+      "}"
+    ],
+    "HostOwnsKeyImpliesNotInFlightSuffix":
+    [
+      "HostOwnsKeyImpliesNotInFlight(c: Constants, v: Variables)",
+      "  requires v.WF(c)",
+      "{",
+      "  forall k | !NoHostOwnsKeyMain(c, v, k)",
+      "  ::",
+      "  !UniqueKeyInFlight(c, v, k)",
+      "}"
+    ],
+    "InitImpliesOwnershipInv":
+    [ 
+      "lemma InitImpliesOwnershipInv(c: Constants, v: Variables)",
+      "  requires Init(c, v)",
+      "  ensures OwnershipInv(c, v)",
+      "{}"
+    ],
+    "OwnershipInvInductiveHeader":
+    [ 
+      "lemma OwnershipInvInductive(c: Constants, v: Variables, v': Variables)",
+      "  requires OwnershipInv(c, v)",
+      "  requires Next(c, v, v')",
+      "  ensures OwnershipInv(c, v')",
+      "{"
+    ],
+    "InvNextAtMostOneInFlightMessagePerKey":
+    [
+      "lemma InvNextAtMostOneInFlightMessagePerKey(c: Constants, v: Variables, v': Variables)",
+      "  requires v'.WF(c)",
+      "  requires OwnershipInv(c, v)",
+      "  requires Next(c, v, v')",
+      "  ensures AtMostOneInFlightMessagePerKey(c, v')",
+      "{",
+      "  forall k, m1, m2 | KeyInFlightByMessage(c, v', m1, k) && KeyInFlightByMessage(c, v', m2, k)",
+      "  ensures m1 == m2",
+      "  {",
+      "    if m1 != m2 {",
+      "      if KeyInFlightByMessage(c, v, m1, k) {",
+      "        InvNextAtMostOneInFlightHelper(c, v, v', m1, m2, k);",
+      "      } else {",
+      "        InvNextAtMostOneInFlightHelper(c, v, v', m2, m1, k);",
+      "      }",
+      "     }",
+      "  }",
+      "}"
+    ],
+    "InvNextAtMostOneInFlightHelper":
+    [
+      "lemma InvNextAtMostOneInFlightHelper(c: Constants, v: Variables, v': Variables, m1: Message, m2: Message, k: UniqueKey)",
+      "  requires v'.WF(c)",
+      "  requires OwnershipInv(c, v)",
+      "  requires Next(c, v, v')",
+      "  // input constraints",
+      "  requires m1 != m2",
+      "  requires KeyInFlightByMessage(c, v, m1, k)",
+      "  requires !KeyInFlightByMessage(c, v, m2, k)",
+      "  // postcondition",
+      "  ensures !KeyInFlightByMessage(c, v', m2, k)",
+      "{",
+      "  assert UniqueKeyInFlight(c, v, k);",
+      "}"
+    ],
+    "InvNextHostOwnsKeyImpliesNotInFlight":
+    [
+      "lemma InvNextHostOwnsKeyImpliesNotInFlight(c: Constants, v: Variables, v': Variables)",
+      "  requires v'.WF(c)",
+      "  requires OwnershipInv(c, v)",
+      "  requires Next(c, v, v')",
+      "  ensures HostOwnsKeyImpliesNotInFlight(c, v')",
+      "{",
+      "  forall k | !NoHostOwnsKeyMain(c, v', k)",
+      "  ensures !UniqueKeyInFlight(c, v', k)",
+      "  {",
+      "    if UniqueKeyInFlight(c, v', k) {",
+      "      var msg :| KeyInFlightByMessage(c, v', msg , k);",
+      "      if msg in v.network.sentMsgs {",
+      "        assert KeyInFlightByMessage(c, v, msg, k);",
+      "        assert NoHostOwnsKeyMain(c, v, k);",
+      "        var dsStep :| NextStep(c, v.Last(), v'.Last(), v.network, v'.network, dsStep);",
+      "        assert dsStep.msgOps.recv.value == msg by {",
+      "          if dsStep.msgOps.recv.value != msg {",
+      "            var m' := dsStep.msgOps.recv.value;",
+      "            assert !KeyInFlightByMessage(c, v, m', k);",
+      "          }",
+      "        }",
+      "      } else {",
+      "        assert !(NoHostOwnsKeyMain(c, v, k));",
+      "      }",
+      "    }",
+      "  }",
+      "}"
+    ], 
+    "ApplicationInvHeader":
+    [
+      "ghost predicate ApplicationInv(c: Constants, v: Variables)",
+      "  requires v.WF(c)",
+      "{"
+    ],
+    "Inv":
+    [
+      "ghost predicate Inv(c: Constants, v: Variables)",
+      "{",
+      "  && MessageInv(c, v)",
+      "  && MonotonicityInv(c, v)",
+      "  && ApplicationInv(c, v)",
+      "  && Safety(c, v)",
+      "}"
+    ],
+    "InvWithOwnership":
+    [
+      "ghost predicate Inv(c: Constants, v: Variables)",
+      "{",
+      "  && MessageInv(c, v)",
+      "  && MonotonicityInv(c, v)",
+      "  && OwnershipInv(c, v)",
+      "  && ApplicationInv(c, v)",
+      "  && Safety(c, v)",
+      "}"
+    ],
+    "ObligationsSeparator":
+    [
+      "/***************************************************************************************",
+      "*                                    Obligations                                       *",
+      "***************************************************************************************/"
+    ],
+    "InvImpliesSafety":
+    [
+      "lemma InvImpliesSafety(c: Constants, v: Variables)",
+      "  requires Inv(c, v)",
+      "  ensures Safety(c, v)",
+      "{}"
+    ],
+    "InitImpliesInv":
+    [
+      "lemma InitImpliesInv(c: Constants, v: Variables)",
+      "  requires Init(c, v)",
+      "  ensures Inv(c, v)",
+      "{",
+      "  InitImpliesMonotonicityInv(c, v);",
+      "  InitImpliesMessageInv(c, v);",
+      "}"
+    ],
+    "InitImpliesInvHeaderWithOwnership":
+    [
+      "lemma InitImpliesInv(c: Constants, v: Variables)",
+      "  requires Init(c, v)",
+      "  ensures Inv(c, v)",
+      "{",
+      "  InitImpliesMonotonicityInv(c, v);",
+      "  InitImpliesMessageInv(c, v);",
+      "  InitImpliesOwnershipInv(c, v);",
+      "}"
+    ],
+    "InvInductiveHeader":
+    [
+      "lemma InvInductive(c: Constants, v: Variables, v': Variables)",
+      "  requires Inv(c, v)",
+      "  requires Next(c, v, v')",
+      "  ensures Inv(c, v')",
+      "{",
+      "  VariableNextProperties(c, v, v');",
+      "  MonotonicityInvInductive(c, v, v');",
+      "  MessageInvInductive(c, v, v');"
+    ],
+    "HelperFunctionsSeparator":
+    [
+      "/***************************************************************************************",
+      "*                                  Helper Functions                                    *",
+      "***************************************************************************************/"
+    ],
+    "InvNextLemmasSeparator":
+    [
+      "/***************************************************************************************",
+      "*                                   InvNext Proofs                                     *",
+      "***************************************************************************************/"
+    ],
+    "HelperLemmasSeparator":
+    [
+      "/***************************************************************************************",
+      "*                                    Helper Lemmas                                     *",
+      "***************************************************************************************/"
+    ],
+    "SyncSpecificLemma":
+    [
+      "{",
+      "  // TODO: This lemma has sync-specific constructs",
+      "  assume false;",
+      "}"
+    ],
+    "AtMostOwnerPerKeyImpliesSafetyLemmaHeader":
+    [ 
+      "lemma AtMostOwnerPerKeyImpliesSafety(c: Constants, v: Variables)",
+      "  requires v.WF(c)"
+    ]
+}

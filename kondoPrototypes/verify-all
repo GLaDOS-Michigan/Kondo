@@ -1,0 +1,141 @@
+#!/bin/sh
+
+# Verifies all Kondo protocols
+# Takes about 5min on M3 MacBook Pro
+
+# Client-Server
+
+echo "Verifying Client-Server (manual)"
+./clientServer/manual/verify
+echo ""
+
+echo "Verifying Client-Server (sync)"
+./clientServer/sync/verify
+echo ""
+
+echo "Verifying Client-Server (kondo)"
+./clientServer/async-kondo/verify
+echo ""
+
+# Ring Leader Election
+
+echo "Verifying Ring Leader Election (manual)"
+./ringLeaderElection/manual/verify
+echo ""
+
+echo "Verifying Ring Leader Election (sync)"
+./ringLeaderElection/sync/verify
+echo ""
+
+echo "Verifying Ring Leader Election (kondo)"
+./ringLeaderElection/async-kondo/verify
+echo ""
+
+# Simplified Leader Election
+
+echo "Verifying Simplified Leader Election (manual)"
+./simplifiedLeaderElection/manual/verify
+echo ""
+
+echo "Verifying Simplified Leader Election (sync)"
+./simplifiedLeaderElection/sync/verify
+echo ""
+
+echo "Verifying Simplified Leader Election (kondo)"
+./simplifiedLeaderElection/async-kondo/verify
+echo ""
+
+# Two-Phase Commit
+
+echo "Verifying Two-Phase Commit (manual)"
+./twoPhaseCommit/manual/verify
+echo ""
+
+echo "Verifying Two-Phase Commit (sync)"
+./twoPhaseCommit/sync/verify
+echo ""
+
+echo "Verifying Two-Phase Commit (kondo)"
+./twoPhaseCommit/async-kondo/verify
+echo ""
+
+# Paxos
+
+echo "Verifying Paxos (manual)"
+./paxos/manual/verify
+echo ""
+
+echo "Verifying Paxos (sync)"
+./paxos/sync/verify
+echo ""
+
+echo "Verifying Paxos (kondo)"
+./paxos/async-kondo/verify
+echo ""
+
+# Flexible Paxos
+# Note that flexPaxos has no manual version
+
+echo "Verifying Flexible Paxos (sync)"
+./flexPaxos/sync/verify
+echo ""
+
+echo "Verifying Flexible Paxos (kondo)"
+./flexPaxos/async-kondo/verify
+echo ""
+
+# Distributed Lock
+
+echo "Verifying DistributedLock (manual)"
+./distributedLock/manual/verify
+echo ""
+
+echo "Verifying DistributedLock (sync)"
+./distributedLock/sync/verify
+echo ""
+
+echo "Verifying DistributedLock (kondo)"
+./distributedLock/async-kondo/verify
+echo ""
+
+# ShardedKV
+
+echo "Verifying ShardedKV (manual)"
+./shardedKv/manual/verify
+echo ""
+
+echo "Verifying ShardedKV (sync)"
+./shardedKv/sync/verify
+echo ""
+
+echo "Verifying ShardedKV (kondo)"
+./shardedKv/async-kondo/verify
+echo ""
+
+# ShardedKV-Batched
+
+echo "Verifying ShardedKV-Batched (manual)"
+./shardedKvBatched/manual/verify
+echo ""
+
+echo "Verifying ShardedKV-Batched (sync)"
+./shardedKvBatched/sync/verify
+echo ""
+
+echo "Verifying ShardedKV-Batched (kondo)"
+./shardedKvBatched/async-kondo/verify
+echo ""
+
+# Lock Server
+
+echo "Verifying Lock Server (manual)"
+./lockServer/manual/verify
+echo ""
+
+echo "Verifying Lock Server (sync)"
+./lockServer/sync/verify
+echo ""
+
+echo "Verifying Lock Server (kondo)"
+./lockServer/async-kondo/verify
+echo ""

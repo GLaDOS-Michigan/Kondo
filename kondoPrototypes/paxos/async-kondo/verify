@@ -1,0 +1,23 @@
+#!/bin/sh
+
+scriptpath=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+
+dafny="$scriptpath/../../../local-dafny/Scripts/dafny"
+
+dafnyMsgInv="$dafny /msgInvs"
+dafnyAsyncProof="$dafny /genAsyncProof"
+dafnyVerify="$dafny /timeLimit:30 /compile:0  /noNLarith /autoTriggers:1 /vcsCores:10"
+
+rm -f messageInvariantsAutogen.dfy monotonicityInvariantsAutogen.dfy applicationProofDraftAutogen.dfy
+
+# Generate Message Invariants and Monotonicity Invariants
+$dafnyMsgInv "distributedSystem.dfy" > autoInvs.log
+
+# Generate Async proof draft
+$dafnyAsyncProof "../sync/applicationProof.dfy" > autoProof.log
+
+# Verify files.
+files="$scriptpath/../../lib/* $scriptpath/../hosts.dfy $scriptpath/../types.dfy $scriptpath/distributedSystem.dfy $scriptpath/spec.dfy $scriptpath/monotonicityInvariantsAutogen.dfy $scriptpath/messageInvariantsAutogen.dfy"
+echo "Verifying $files" | tr " " "\n"
+
+time ($dafnyVerify $files && echo "Verifying $scriptpath/applicationProof_demo.dfy" && $dafnyVerify $scriptpath/applicationProof_demo.dfy)

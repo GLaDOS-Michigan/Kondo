@@ -9,14 +9,26 @@ import opened UtilitiesLibrary
 import opened MonotonicityLibrary
 import opened DistributedSystem
 
-// Message Invariant: self inductive
-ghost predicate ValidMessages(c: Constants, v: Variables) 
+ghost predicate ValidMessages(c: Constants, v: Variables)
   requires v.WF(c)
 {
-  forall msg | msg in v.network.sentMsgs 
-  :: match msg 
-      case VoteReq(candidate) => c.ValidHostId(candidate)
-      case Vote(voter, candidate) => c.ValidHostId(voter)
+  && ValidMessages1(c, v)
+  && ValidMessages2(c, v)
+}
+
+// Message Invariant: self inductive
+ghost predicate ValidMessages1(c: Constants, v: Variables) 
+  requires v.WF(c)
+{
+  forall msg | msg in v.network.sentMsgs && msg.VoteReq?
+  :: c.ValidHostId(msg.candidate)
+}
+
+ghost predicate ValidMessages2(c: Constants, v: Variables) 
+  requires v.WF(c)
+{
+  forall msg | msg in v.network.sentMsgs && msg.Vote?
+  :: c.ValidHostId(msg.voter)
 }
 
 // Message Invariant: self inductive
@@ -40,7 +52,8 @@ ghost predicate VoteMsgImpliesNominee(c: Constants, v: Variables)
 ghost predicate MessageInv(c: Constants, v: Variables) 
 {
   && v.WF(c)
-  && ValidMessages(c, v)
+  && ValidMessages1(c, v)
+  && ValidMessages2(c, v)
   && ReceivedVotesValidity(c, v)
   && VoteMsgImpliesNominee(c, v)
 }

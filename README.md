@@ -54,6 +54,9 @@ We begin with building our local version of Dafny that contains Kondo extensions
 
 **TODO**
 
+Warnings of the form `Warning: /!\ No terms found to trigger on.` can be ignored
+
+
 ## Detailed Instructions
 
 Kondo is designed to relieve developer effort in verifying distributed systems. To evaluate this, we apply two metrics:
@@ -67,7 +70,7 @@ Note that differs from paper, due to improvements.
 
 ### Verifying Claim 1
 
-**Claim:** User's write fewer invariants
+**Claim:** Users write fewer invariants
 
 
 | protocol                   | without Kondo | with Kondo |
@@ -86,8 +89,21 @@ Note that differs from paper, due to improvements.
 
 ### Verifying Claim 2
 
-**TODO**: Give an updated table of claims, as the one in paper is out of date.
+**Claim:** Users write fewer lines of proof code
+
+| protocol                   | without Kondo | with Kondo |
+|----------------------------|---------------|------------|
+| Client-Server              | 93            | 40         |
+| Ring Leader Election       | 191           | 63         |
+| Simplified Leader Election | 125           | 94         |
+| Two-Phase Commit           | 184           | 133        |
+| Paxos                      | 850           | 557        |
+| Flexible Paxos             | -             | 554        |
+| Distributed Lock           | 64            | 31         |
+| ShardedKV                  | 178           | 61         |
+| ShardedKV-Batched          | 178           | 31         |
+| Lock Server                | 267           | 44         |
 
 
-Warnings of the form `Warning: /!\ No terms found to trigger on.` can be ignored
+
 

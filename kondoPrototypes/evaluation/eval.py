@@ -2,9 +2,10 @@ import csv
 import os
 from file_sloc import count_sloc_between
 
-CSV_FILE = "protocols.csv"
-ROOT_PATH = "/Users/nudzhang/Documents/UMich2024sp/kondo/kondo-artifact.nosync/kondoPrototypes"
-OUTPUT_PATH = "/Users/nudzhang/Documents/UMich2024sp/kondo/kondo-artifact.nosync/kondoPrototypes/evaluation/sloc.csv"
+EVAL_PATH = os.path.dirname(os.path.realpath(__file__))
+CSV_FILE = f"{EVAL_PATH}/protocols.csv"
+ROOT_PATH = f"{EVAL_PATH}/.."
+OUTPUT_PATH = f"{EVAL_PATH}/sloc.csv"
 
 def analyze_protocol(file_path):
     with open(file_path, 'r') as csvfile:

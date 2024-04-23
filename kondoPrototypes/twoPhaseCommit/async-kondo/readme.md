@@ -7,13 +7,13 @@ Generates async proof from sync proof.
 Generate monotonicity and message invariants:
 
 ```bash
-/Users/nudzhang/Documents/UMich2023sp/linear-dist.nosync/local-dafny/Scripts/dafny /msgInvs distributedSystem.dfy
+./local-dafny/Scripts/dafny /msgInvs distributedSystem.dfy
 ```
 
 Generate async draft proof:
 
 ```bash
-/Users/nudzhang/Documents/UMich2023sp/linear-dist.nosync/local-dafny/Scripts/dafny /genAsyncProof ../centralized/applicationProof.dfy
+./local-dafny/Scripts/dafny /genAsyncProof ../centralized/applicationProof.dfy
 ```
 
 To complete the draft proof, the user must fill in the body for lemma `InvNextAC3`, given below.

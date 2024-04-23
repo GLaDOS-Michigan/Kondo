@@ -8,7 +8,6 @@ import opened UtilitiesLibrary
 import opened DistributedSystem
 import opened Obligations
 
-// certified self-inductive
 // Every message in the network has a valid source
 ghost predicate ValidMessageSrc(c: Constants, v: Variables) 
   requires v.WF(c)
@@ -23,7 +22,6 @@ ghost predicate ValidMessageSrc(c: Constants, v: Variables)
     case Learn(_, _, _) => true
 }
 
-// certified self-inductive
 // Leader updates its highestHeard and value based on a Promise message carrying that
 // ballot and value
 ghost predicate LeaderValidHighestHeard(c: Constants, v: Variables) 
@@ -37,20 +35,6 @@ ghost predicate LeaderValidHighestHeard(c: Constants, v: Variables)
     )
 }
 
-
-// This is not needed in ApplicationProof
-// Leader updates receivedPromises based on Promise messages
-// ghost predicate LeaderValidReceivedPromises(c: Constants, v: Variables)
-//   requires v.WF(c)
-// {
-//   forall idx, src | c.ValidLeaderIdx(idx) && src in v.leaders[idx].receivedPromises
-//   :: (exists prom: Message ::
-//         && IsPromiseMessage(v, prom)
-//         && prom.bal == idx
-//     )
-// } 
-
-// certified self-inductive
 ghost predicate AcceptorValidPendingMsg(c: Constants, v: Variables) 
   requires v.WF(c)
 {
@@ -58,7 +42,6 @@ ghost predicate AcceptorValidPendingMsg(c: Constants, v: Variables)
   :: Prepare(v.acceptors[idx].pendingPrepare.value.bal) in v.network.sentMsgs
 }
 
-// certified self-inductive
 // Learner updates its receivedAccepts map based on a Accept message carrying that 
 // accepted ValBal pair
 ghost predicate LearnerValidReceivedAccepts(c: Constants, v: Variables) 
@@ -72,11 +55,11 @@ ghost predicate LearnerValidReceivedAccepts(c: Constants, v: Variables)
     Accept(vb, acc) in v.network.sentMsgs
 }
 
-// Message bundle
+// Message bundle: 7 clauses in total
 ghost predicate MessageInv(c: Constants, v: Variables) 
 {
   && v.WF(c)
-  && ValidMessageSrc(c, v)
+  && ValidMessageSrc(c, v)             // 4
   && AcceptorValidPendingMsg(c, v)
   && LeaderValidHighestHeard(c, v)
   && LearnerValidReceivedAccepts(c, v)

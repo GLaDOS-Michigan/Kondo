@@ -240,7 +240,7 @@ ghost predicate ChosenValImpliesProposeOnlyVal(c: Constants, v: Variables) {
     propose.val == vb.v
 }
 
-// Application bundle
+// Application bundle: 20 clauses in total
 ghost predicate ApplicationInv(c: Constants, v: Variables)
   requires v.WF(c)
   requires ValidMessageSrc(c, v)

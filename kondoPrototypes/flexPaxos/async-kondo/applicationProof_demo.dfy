@@ -1,4 +1,4 @@
-/// This file is auto-generated from /Users/nudzhang/Documents/UMich2023sp/linear-dist.nosync/KondoPrototypes/flexPaxos/centralized/applicationProof.dfy
+/// This file is auto-generated from KondoPrototypes/flexPaxos/centralized/applicationProof.dfy
 /// Generated 04/02/2024 16:35 Pacific Standard Time
 
 /// This file is then manually modified to complete the proof

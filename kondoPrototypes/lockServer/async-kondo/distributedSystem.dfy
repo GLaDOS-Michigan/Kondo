@@ -1,4 +1,4 @@
-/// This file is auto-generated from /Users/nudzhang/Documents/UMich2023sp/linear-dist.nosync/messageInvariantPrototypes/lockServer/centralized/system.dfy
+/// This file is auto-generated from messageInvariantPrototypes/lockServer/centralized/system.dfy
 include "../hosts.dfy"
 
 module Network {

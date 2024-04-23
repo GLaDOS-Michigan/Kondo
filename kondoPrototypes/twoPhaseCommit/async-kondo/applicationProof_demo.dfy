@@ -1,4 +1,4 @@
-/// This file is auto-generated from /Users/nudzhang/Documents/UMich2023sp/linear-dist.nosync/KondoPrototypes/twoPhaseCommit/centralized/applicationProof.dfy
+/// This file is auto-generated from KondoPrototypes/twoPhaseCommit/centralized/applicationProof.dfy
 /// Generated 04/02/2024 16:50 Pacific Standard Time
 
 /// It has been modified to fill the the body of lemma InvNextAC3

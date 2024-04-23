@@ -10,7 +10,7 @@ import opened Obligations
 *                                Application Invariants                                *
 ***************************************************************************************/
 
-// Protocol bundle
+// Protocol bundle: 4 clauses in total
 ghost predicate ProtocolInv(c: Constants, v: Variables)
   requires v.WF(c)
 {

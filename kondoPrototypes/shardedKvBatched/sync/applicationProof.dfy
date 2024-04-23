@@ -7,7 +7,7 @@ import opened System
 import opened Obligations
 
 
-// Protocol bundle
+// Protocol bundle: 0 clauses in total
 ghost predicate ProtocolInv(c: Constants, v: Variables)
   requires v.WF(c)
 {

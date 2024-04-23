@@ -14,7 +14,7 @@ ghost predicate ServerOwnsLockImpliesNoClientsOwnsLock(c: Constants, v: Variable
   (forall id | c.ValidClientIdx(id) :: !v.clients[id].hasLock)
 }
 
-// Protocol bundle
+// Protocol bundle: 1 clause in total
 ghost predicate ProtocolInv(c: Constants, v: Variables)
   requires v.WF(c)
 {

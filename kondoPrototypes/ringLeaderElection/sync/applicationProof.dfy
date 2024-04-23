@@ -19,6 +19,7 @@ ghost predicate ProtocolInv(c: Constants, v: Variables)
   ChordDominates(c, v)
 }
 
+// Protocol bundle: 1 clause in total
 ghost predicate Inv(c: Constants, v: Variables)
 {
   && v.WF(c)

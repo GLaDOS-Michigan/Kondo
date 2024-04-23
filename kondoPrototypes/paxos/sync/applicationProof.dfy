@@ -197,23 +197,23 @@ ghost predicate ChosenValImpliesLeaderOnlyHearsVal(c: Constants, v: Variables)
     v.leaders[ldrBal].Value() == vb.v
 }
 
-// Protocol bundle
+// Protocol bundle: 20 clauses in total
 ghost predicate ProtocolInv(c: Constants, v: Variables)
   requires v.WF(c)
 {
   && LearnerValidReceivedAccepts(c, v)
   && LearnedImpliesQuorumOfAccepts(c, v)
-  && LearnerReceivedAcceptImpliesProposed(c, v)
-  && LearnerReceivedAcceptImpliesAccepted(c, v)
+  && LearnerReceivedAcceptImpliesProposed(c, v)   // 2
+  && LearnerReceivedAcceptImpliesAccepted(c, v)   // 2
   && AcceptorValidPromisedAndAccepted(c, v)
-  && AcceptorAcceptedImpliesProposed(c, v)
+  && AcceptorAcceptedImpliesProposed(c, v)        // 2
   && LeaderValidReceivedPromises(c, v)
   && LeaderHighestHeardUpperBound(c, v)
-  && LeaderHearedImpliesProposed(c, v)
-  && LeaderReceivedPromisesImpliesAcceptorState(c, v)
+  && LeaderHearedImpliesProposed(c, v)                    // 2
+  && LeaderReceivedPromisesImpliesAcceptorState(c, v)     // 2
   && LeaderHighestHeardToPromisedRangeHasNoAccepts(c, v)
   && ChosenValImpliesAcceptorOnlyAcceptsVal(c, v)
-  && ChosenImpliesProposingLeaderHearsChosenBallot(c, v)
+  && ChosenImpliesProposingLeaderHearsChosenBallot(c, v)  // 2
   && ChosenValImpliesLeaderOnlyHearsVal(c, v)
 }
 

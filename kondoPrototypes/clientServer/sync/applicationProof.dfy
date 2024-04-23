@@ -21,6 +21,7 @@ ghost predicate ServerRequestsValid(c: Constants, v: Variables)
   && req.reqId in v.clients[req.clientId].requests.s
 }
 
+// Protocol bundle: 1 clause in total
 ghost predicate ProtocolInv(c: Constants, v: Variables)
   requires v.WF(c)
 {

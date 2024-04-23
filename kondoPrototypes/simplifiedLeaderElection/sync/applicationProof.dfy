@@ -37,7 +37,7 @@ ghost predicate IsLeaderImpliesHasQuorum(c: Constants, v: Variables)
   :: SetIsQuorum(c.hosts[h].clusterSize, v.hosts[h].receivedVotes)
 }
 
-// Protocol bundle
+// Protocol bundle: 3 clauses in total
 ghost predicate ProtocolInv(c: Constants, v: Variables)
   requires v.WF(c)
 {

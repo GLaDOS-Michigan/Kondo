@@ -49,7 +49,10 @@ We begin with building our local version of Dafny that contains Kondo extensions
 	```
 	The expected output is
 	> `Dafny program verifier finished with 1 verified, 0 errors`
+	
+### Verifying Protocols
 
+**TODO**
 
 ## Detailed Instructions
 
@@ -60,13 +63,31 @@ Kondo is designed to relieve developer effort in verifying distributed systems. 
 
 The next two section detail how we obtain these numbers.
 
+Note that differs from paper, due to improvements. 
+
 ### Verifying Claim 1
 
-**Claim:** User's write fewer  
+**Claim:** User's write fewer invariants
 
+
+| protocol                   | without Kondo | with Kondo |
+|----------------------------|---------------|------------|
+| Client-Server              | 5             | 1          |
+| Ring Leader Election       | 6             | 1          |
+| Simplified Leader Election | 7             | 3          |
+| Two-Phase Commit           | 8             | 4          |
+| Paxos                      | 27            | 20         |
+| Flexible Paxos             | -             | 21         |
+| Distributed Lock           | 2             | 0          |
+| ShardedKV                  | 2             | 0          |
+| ShardedKV-Batched          | 2             | 0          |
+| Lock Server                | 7             | 1          |
 
 
 ### Verifying Claim 2
 
-TODO: Give an updated table of claims, as the one in paper is out of date.
+**TODO**: Give an updated table of claims, as the one in paper is out of date.
+
+
+Warnings of the form `Warning: /!\ No terms found to trigger on.` can be ignored
 

@@ -52,9 +52,25 @@ We begin with building our local version of Dafny that contains Kondo extensions
 	
 ### Verifying Protocols
 
-**TODO**
+Now that Dafny is set up, we check that all 10 protocols in our evaluation passes the dafny verifier. 
 
-Warnings of the form `Warning: /!\ No terms found to trigger on.` can be ignored
+```bash
+cd kondoPrototypes/
+./verify-all 
+```
+Note that warnings of the form `Warning: /!\ No terms found to trigger on.` can be ignored
+
+This script runs the dafny verifier on each of the protocol, and takes about 5min on an M3 MacBook Pro. Note that for each protocol, there are three versions:
+
+1. Manual: This is fully manual proof of the asynchronous protocol (i.e. what a user would do without Kondo)
+2. Sync: This is a synchronous proof of the protocol, and serves as the input to Kondo (step 1 in Figure 6)
+3. Kondo: This is the Kondo-generated asynchronous protocol
+
+One may also verify each version of each protocol individually, by running the `verify` script in the respective sub-directory for the protocol version. For instance:
+
+```bash
+./kondoPrototypes/clientServer/sync/verify
+```
 
 
 ## Detailed Instructions
@@ -70,7 +86,7 @@ Note that differs from paper, due to improvements.
 
 ### Verifying Claim 1
 
-**Claim:** Users write fewer invariants
+**TODO** **Claim:** Users write fewer invariants
 
 
 | protocol                   | without Kondo | with Kondo |

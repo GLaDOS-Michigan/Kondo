@@ -21,7 +21,7 @@ ghost predicate ServerRequestsValid(c: Constants, v: Variables)
   && req.reqId in v.clients[req.clientId].requests.s
 }
 
-ghost predicate ApplicationInv(c: Constants, v: Variables)
+ghost predicate ProtocolInv(c: Constants, v: Variables)
   requires v.WF(c)
 {
   ServerRequestsValid(c, v)
@@ -30,7 +30,7 @@ ghost predicate ApplicationInv(c: Constants, v: Variables)
 ghost predicate Inv(c: Constants, v: Variables)
 {
   && v.WF(c)
-  && ApplicationInv(c, v)
+  && ProtocolInv(c, v)
   && Safety(c, v)
 }
 

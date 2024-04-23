@@ -45,7 +45,7 @@ ghost predicate VoteMsgImpliesNominee(c: Constants, v: Variables)
   :: v.hosts[msg.voter].nominee == WOSome(msg.candidate)
 }
 
-// Application bundle: 4 clauses in total
+// Protocol bundle: 4 clauses in total
 ghost predicate MessageInv(c: Constants, v: Variables) 
 {
   && v.WF(c)

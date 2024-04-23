@@ -67,7 +67,7 @@ ghost predicate LeaderTallyReflectsPreferences2(c: Constants, v: Variables)
   )
 }
 
-ghost predicate ApplicationInv(c: Constants, v: Variables)
+ghost predicate ProtocolInv(c: Constants, v: Variables)
   requires v.WF(c)
 {
   && LeaderVotesValid1(c, v)
@@ -80,7 +80,7 @@ ghost predicate Inv(c: Constants, v: Variables)
 {
   && MessageInv(c, v)
   && MonotonicityInv(c, v)
-  && ApplicationInv(c, v)
+  && ProtocolInv(c, v)
   && Safety(c, v)
 }
 
@@ -133,7 +133,7 @@ lemma InvNextAC1(c: Constants, v: Variables, v': Variables)
 lemma InvNextLeaderTallyReflectsPreferences(c: Constants, v: Variables, v': Variables)
   requires Inv(c, v)
   requires Next(c, v, v')
-  ensures ApplicationInv(c, v')
+  ensures ProtocolInv(c, v')
   decreases c, v, v'
 {
   VariableNextProperties(c, v, v');

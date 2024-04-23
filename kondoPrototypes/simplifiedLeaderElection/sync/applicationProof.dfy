@@ -37,8 +37,8 @@ ghost predicate IsLeaderImpliesHasQuorum(c: Constants, v: Variables)
   :: SetIsQuorum(c.hosts[h].clusterSize, v.hosts[h].receivedVotes)
 }
 
-// Application bundle
-ghost predicate ApplicationInv(c: Constants, v: Variables)
+// Protocol bundle
+ghost predicate ProtocolInv(c: Constants, v: Variables)
   requires v.WF(c)
 {
   && ReceivedVotesValid(c, v)
@@ -49,7 +49,7 @@ ghost predicate ApplicationInv(c: Constants, v: Variables)
 ghost predicate Inv(c: Constants, v: Variables)
 {
   && v.WF(c)
-  && ApplicationInv(c, v)
+  && ProtocolInv(c, v)
   && Safety(c, v)
 }
 
@@ -100,7 +100,7 @@ lemma InvNextHasVoteImpliesVoterNominates(c: Constants, v: Variables, v': Variab
 
 lemma SafetyProof(c: Constants, v: Variables)
   requires v.WF(c)
-  requires ApplicationInv(c, v)
+  requires ProtocolInv(c, v)
   ensures Safety(c, v)
 {
   /* Proof by contradiction: Assume two leaders were elected in v', L1 and L2.

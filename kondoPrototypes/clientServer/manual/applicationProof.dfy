@@ -13,8 +13,8 @@ import opened MessageInvariants
 *                                Application Invariants                                *
 ***************************************************************************************/
 
-// Application bundle: 1 clause in total
-ghost predicate ApplicationInv(c: Constants, v: Variables)
+// Protocol bundle: 1 clause in total
+ghost predicate ProtocolInv(c: Constants, v: Variables)
   requires v.WF(c)
   requires MessageInv(c, v)
 {
@@ -24,7 +24,7 @@ ghost predicate ApplicationInv(c: Constants, v: Variables)
 ghost predicate Inv(c: Constants, v: Variables)
 {
   && MessageInv(c, v)
-  && ApplicationInv(c, v)
+  && ProtocolInv(c, v)
   && Safety(c, v)
 }
 

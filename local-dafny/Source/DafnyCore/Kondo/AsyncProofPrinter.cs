@@ -65,7 +65,7 @@ public static class AsyncProofPrinter {
     }
 
     // Print Application Invariant bundle
-    res.Append(GetFromTemplate("ApplicationInvHeader", 0));
+    res.Append(GetFromTemplate("ProtocolInvHeader", 0));
     foreach (Function appInv in file.GetAppInvPredicates()) {
       res.AppendLine("  && " + appInv.Name + "(c, v)");
     }

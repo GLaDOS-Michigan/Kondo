@@ -23,7 +23,7 @@ The following lemmas are manually added or modified:
 lemma InvNextLearnedImpliesQuorumOfAccepts(c: Constants, v: Variables, v': Variables) 
   requires v.WF(c)
   requires ValidMessages(c, v)  // From MessageInv
-  requires ApplicationInv(c, v)
+  requires ProtocolInv(c, v)
   requires Next(c, v, v')
   ensures LearnedImpliesQuorumOfAccepts(c, v')
 {

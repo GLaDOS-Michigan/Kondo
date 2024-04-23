@@ -10,8 +10,8 @@ import opened Obligations
 *                                Application Invariants                                *
 ***************************************************************************************/
 
-// Application bundle
-ghost predicate ApplicationInv(c: Constants, v: Variables)
+// Protocol bundle
+ghost predicate ProtocolInv(c: Constants, v: Variables)
   requires v.WF(c)
 {
   && LeaderVotesValid1(c, v)
@@ -59,7 +59,7 @@ ghost predicate LeaderTallyReflectsPreferences2(c: Constants, v: Variables)
 ghost predicate Inv(c: Constants, v: Variables)
 {
   && v.WF(c)
-  && ApplicationInv(c, v)
+  && ProtocolInv(c, v)
   && Safety(c, v)
 }
 
@@ -98,7 +98,7 @@ lemma InvNextAC1(c: Constants, v: Variables, v': Variables)
 lemma InvNextLeaderTallyReflectsPreferences(c: Constants, v: Variables, v': Variables) 
   requires Inv(c, v)
   requires Next(c, v, v')
-  ensures ApplicationInv(c, v')
+  ensures ProtocolInv(c, v')
 {}
 
 lemma InvNextAC3(c: Constants, v: Variables, v': Variables)

@@ -6,7 +6,7 @@ namespace Microsoft.Dafny {
 
 public class AsyncProofFile {
   private IndDatatypeDecl constants;  // datatype Constants in System module
-  private readonly List<Function> appInvPredicates;  // ApplicationInv predicates
+  private readonly List<Function> appInvPredicates;  // ProtocolInv predicates
   private readonly List<Function> helperFunctions;   // functions and predicates that are not invariants, and not special
   private readonly List<Function> specialHelperFunctions;   // these are predicates containing (v:Variable) and called by appInvPredicates, e.g. Chosen in paxos
   private readonly List<Lemma> invNextLemmas;

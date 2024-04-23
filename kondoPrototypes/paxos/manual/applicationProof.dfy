@@ -240,8 +240,8 @@ ghost predicate ChosenValImpliesProposeOnlyVal(c: Constants, v: Variables) {
     propose.val == vb.v
 }
 
-// Application bundle: 20 clauses in total
-ghost predicate ApplicationInv(c: Constants, v: Variables)
+// Protocol bundle: 20 clauses in total
+ghost predicate ProtocolInv(c: Constants, v: Variables)
   requires v.WF(c)
   requires ValidMessageSrc(c, v)
 {
@@ -266,7 +266,7 @@ ghost predicate ApplicationInv(c: Constants, v: Variables)
 ghost predicate Inv(c: Constants, v: Variables)
 {
   && MessageInv(c, v)
-  && ApplicationInv(c, v)
+  && ProtocolInv(c, v)
   && Agreement(c, v)
 }
 
@@ -317,7 +317,7 @@ lemma InvInductive(c: Constants, v: Variables, v': Variables)
   InvNextAcceptorPromisedLargerThanAccepted(c, v, v');
   InvNextPromiseBalLargerThanAccepted(c, v, v');
   InvNextChosenValImpliesProposeOnlyVal(c, v, v');
-  MessageAndApplicationInvImpliesAgreement(c, v');
+  MessageAndProtocolInvImpliesAgreement(c, v');
 }
 
 
@@ -760,10 +760,10 @@ lemma NoNewChosenInLeaderOrLearnerSteps(c: Constants, v: Variables, v': Variable
   }
 }
 
-// Lemma: If MessageInv and ApplicationInv, then the Agreement property is true
-lemma MessageAndApplicationInvImpliesAgreement(c: Constants, v: Variables) 
+// Lemma: If MessageInv and ProtocolInv, then the Agreement property is true
+lemma MessageAndProtocolInvImpliesAgreement(c: Constants, v: Variables) 
   requires MessageInv(c, v)
-  requires ApplicationInv(c, v)
+  requires ProtocolInv(c, v)
   ensures Agreement(c, v)
 {
   /* Proof by contradiction. Suppose that v violates agreement, such that there are two

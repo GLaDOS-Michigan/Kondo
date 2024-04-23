@@ -30,7 +30,7 @@ ghost predicate ServerOwnsLockImpliesNoClientsOwnsLock(c: Constants, v: Variable
   )
 }
 
-ghost predicate ApplicationInv(c: Constants, v: Variables)
+ghost predicate ProtocolInv(c: Constants, v: Variables)
   requires v.WF(c)
 {
   && ServerOwnsLockImpliesNoClientsOwnsLock(c, v)
@@ -41,7 +41,7 @@ ghost predicate Inv(c: Constants, v: Variables)
   && MessageInv(c, v)
   && MonotonicityInv(c, v)
   && OwnershipInv(c, v)
-  && ApplicationInv(c, v)
+  && ProtocolInv(c, v)
   && Safety(c, v)
 }
 

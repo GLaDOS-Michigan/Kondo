@@ -28,7 +28,7 @@ public class AsyncProofDriver {
     proofFile.invInductiveLemma = GetLemma(centralizedProof, "InvInductive");
     ResolveIsOwnership();
     ResolveHosts();
-    ResolveApplicationInvariants(centralizedProof);
+    ResolveProtocolInvariants(centralizedProof);
     ResolveHelperFunctions(centralizedProof);
     ResolveInvNextLemmas(centralizedProof);
     ResolveHelperLemmas(centralizedProof);
@@ -73,11 +73,11 @@ public class AsyncProofDriver {
   }
 
   // Resolve list of application invariant predicates
-  private void ResolveApplicationInvariants(ModuleDefinition centralizedProof) {
+  private void ResolveProtocolInvariants(ModuleDefinition centralizedProof) {
 
     // get the app inv bundle from centralized
-    (bool ok1, Function appInv) = GetPredicate(centralizedProof, "ApplicationInv");
-    Debug.Assert(ok1, String.Format("Predicate {0} not found ", "ApplicationInv"));
+    (bool ok1, Function appInv) = GetPredicate(centralizedProof, "ProtocolInv");
+    Debug.Assert(ok1, String.Format("Predicate {0} not found ", "ProtocolInv"));
     
     // extract the conjunct names, and add Function to proofFile
     foreach (var exp in Expression.Conjuncts(appInv.Body)) {
@@ -120,7 +120,7 @@ public class AsyncProofDriver {
   // Resolve list of non-invariant functions and predicates
   private void ResolveHelperFunctions(ModuleDefinition centralizedProof) {
     var appInvs = proofFile.GetAppInvPredicates(); // previously resolved application invariants
-    string[] reservedNames = {"Inv", "ApplicationInv"};
+    string[] reservedNames = {"Inv", "ProtocolInv"};
     foreach (var fn in ModuleDefinition.AllFunctions(centralizedProof.TopLevelDecls.ToList())) {
       if (!appInvs.Contains(fn) && !reservedNames.Contains(fn.Name)) {
         if (IsSpecialHelperFunction(fn)) {

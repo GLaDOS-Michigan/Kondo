@@ -12,8 +12,8 @@ import opened Obligations
 ***************************************************************************************/
 
 
-// Application bundle
-ghost predicate ApplicationInv(c: Constants, v: Variables)
+// Protocol bundle
+ghost predicate ProtocolInv(c: Constants, v: Variables)
   requires v.WF(c)
 {
   ChordDominates(c, v)
@@ -22,7 +22,7 @@ ghost predicate ApplicationInv(c: Constants, v: Variables)
 ghost predicate Inv(c: Constants, v: Variables)
 {
   && v.WF(c)
-  && ApplicationInv(c, v)
+  && ProtocolInv(c, v)
   && Safety(c, v)
 }
 

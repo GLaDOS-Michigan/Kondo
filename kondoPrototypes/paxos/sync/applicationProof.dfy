@@ -197,8 +197,8 @@ ghost predicate ChosenValImpliesLeaderOnlyHearsVal(c: Constants, v: Variables)
     v.leaders[ldrBal].Value() == vb.v
 }
 
-// Application bundle
-ghost predicate ApplicationInv(c: Constants, v: Variables)
+// Protocol bundle
+ghost predicate ProtocolInv(c: Constants, v: Variables)
   requires v.WF(c)
 {
   && LearnerValidReceivedAccepts(c, v)
@@ -220,7 +220,7 @@ ghost predicate ApplicationInv(c: Constants, v: Variables)
 ghost predicate Inv(c: Constants, v: Variables)
 {
   && v.WF(c)
-  && ApplicationInv(c, v)
+  && ProtocolInv(c, v)
   && Safety(c, v)
 }
 
@@ -607,7 +607,7 @@ lemma LearnedImpliesChosen(c: Constants, v: Variables, lnr: LearnerId, val: Valu
 
 lemma InvImpliesAtMostOneChosenVal(c: Constants, v: Variables)
   requires v.WF(c)
-  requires ApplicationInv(c, v)
+  requires ProtocolInv(c, v)
   ensures AtMostOneChosenVal(c, v)
 {}
 

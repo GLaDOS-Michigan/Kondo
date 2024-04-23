@@ -102,8 +102,8 @@ module LockServerProof {
     v.server[0].hasLock ==> NoClientOwnsLock(c, v)
   }
   
-  // Application bundle: 5 clauses in total
-  ghost predicate ApplicationInv(c: Constants, v: Variables)
+  // Protocol bundle: 5 clauses in total
+  ghost predicate ProtocolInv(c: Constants, v: Variables)
     requires v.WF(c)
   {
     && AtMostOneInFlightMessage(c, v)
@@ -117,7 +117,7 @@ module LockServerProof {
   {
     && v.WF(c)
     && MessageInv(c, v)
-    && ApplicationInv(c, v)
+    && ProtocolInv(c, v)
     && Safety(c, v)
   }
 

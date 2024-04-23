@@ -16,7 +16,6 @@ ghost predicate ValidMessages(c: Constants, v: Variables)
   && ValidMessages2(c, v)
 }
 
-// Message Invariant: self inductive
 ghost predicate ValidMessages1(c: Constants, v: Variables) 
   requires v.WF(c)
 {
@@ -31,7 +30,6 @@ ghost predicate ValidMessages2(c: Constants, v: Variables)
   :: c.ValidHostId(msg.voter)
 }
 
-// Message Invariant: self inductive
 ghost predicate ReceivedVotesValidity(c: Constants, v: Variables) 
   requires v.WF(c)
 {
@@ -39,8 +37,6 @@ ghost predicate ReceivedVotesValidity(c: Constants, v: Variables)
   :: Vote(voter, idx) in v.network.sentMsgs
 }
 
-// Message Invariant: self inductive
-// Property of Send
 ghost predicate VoteMsgImpliesNominee(c: Constants, v: Variables)
   requires v.WF(c)
   requires ValidMessages(c, v)
@@ -49,6 +45,7 @@ ghost predicate VoteMsgImpliesNominee(c: Constants, v: Variables)
   :: v.hosts[msg.voter].nominee == WOSome(msg.candidate)
 }
 
+// Application bundle: 4 clauses in total
 ghost predicate MessageInv(c: Constants, v: Variables) 
 {
   && v.WF(c)

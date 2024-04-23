@@ -51,6 +51,7 @@ ghost predicate ParticipantsDecisionImpliesDecideMsg1(c: Constants, v: Variables
   :: (ParticipantDecidedCommit(c, v, i) ==> DecideMsg(Commit) in v.network.sentMsgs)
 }
 
+// Message bundle: 5 clauses in total
 ghost predicate MessageInv(c: Constants, v: Variables)
 {
   && v.WF(c)

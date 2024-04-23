@@ -13,7 +13,7 @@ import opened MessageInvariants
 *                                Application Invariants                                *
 ***************************************************************************************/
 
-// Application bundle
+// Application bundle: 1 clause in total
 ghost predicate ApplicationInv(c: Constants, v: Variables)
   requires v.WF(c)
   requires MessageInv(c, v)

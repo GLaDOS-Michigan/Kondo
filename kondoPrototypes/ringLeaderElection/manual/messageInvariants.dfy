@@ -31,6 +31,7 @@ module MessageInvariants {
                     && idx == Successor(|c.hostConstants|, msg.src))
   }
 
+  // Message bundle: 4 clauses
   ghost predicate MessageInv(c: Constants, v: Variables)
   {
     && v.WF(c)

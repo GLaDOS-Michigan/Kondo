@@ -7,7 +7,6 @@ import opened UtilitiesLibrary
 import opened DistributedSystem
 import opened Obligations
 
-// certified self inductive, modulo requires
 // Every request message in the network has a proper source
 ghost predicate RequestMsgsValidSource(c: Constants, v: Variables) 
   requires v.WF(c)
@@ -16,7 +15,6 @@ ghost predicate RequestMsgsValidSource(c: Constants, v: Variables)
   :: c.ValidClientIdx(req.r.clientId)
 }
 
-// certified self inductive, modulo requires
 // Every request message in the network comes from the source's request set
 // Property of Send
 ghost predicate RequestMsgsValid(c: Constants, v: Variables)
@@ -27,7 +25,6 @@ ghost predicate RequestMsgsValid(c: Constants, v: Variables)
   :: req.r.reqId in v.clients[req.r.clientId].requests.s
 }
 
-// certified self inductive, modulo requires
 // The server's current request must have come from the network
 // Property of Receive
 ghost predicate ServerCurrentRequestValid(c: Constants, v: Variables)
@@ -37,7 +34,6 @@ ghost predicate ServerCurrentRequestValid(c: Constants, v: Variables)
   ==> RequestMsg(v.GetServer(c).currentRequest.value) in v.network.sentMsgs
 }
 
-// certified self inductive, modulo requires
 // Every client's collected responses came from the network.
 // Property of Receive
 ghost predicate ClientResponsesValid(c: Constants, v: Variables)
@@ -47,7 +43,7 @@ ghost predicate ClientResponsesValid(c: Constants, v: Variables)
   :: ResponseMsg(Req(idx, respId)) in v.network.sentMsgs
 }
 
-
+// Message bundle: 4 clauses in total
 ghost predicate MessageInv(c: Constants, v: Variables) 
 {
   && v.WF(c)

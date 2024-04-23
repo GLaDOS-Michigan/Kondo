@@ -42,7 +42,7 @@ ghost predicate IsLeaderImpliesHasQuorum(c: Constants, v: Variables)
   :: SetIsQuorum(c.hostConstants[h].clusterSize, v.hosts[h].receivedVotes)
 }
 
-// Application bundle
+// Application bundle: 3 clauses in total
 ghost predicate ApplicationInv(c: Constants, v: Variables)
   requires v.WF(c)
 {

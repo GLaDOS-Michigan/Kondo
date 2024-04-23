@@ -14,7 +14,7 @@ import opened MessageInvariants
 *                                Application Invariants                                *
 ***************************************************************************************/
 
-// Application bundle
+// Application bundle: 4 clauses
 ghost predicate ApplicationInv(c: Constants, v: Variables)
   requires v.WF(c)
   requires MessageInv(c, v)

@@ -75,19 +75,23 @@ One may also verify each version of each protocol individually, by running the `
 
 ## Detailed Instructions
 
-Kondo is designed to relieve developer effort in verifying distributed systems. To evaluate this, we apply two metrics:
+This section involves reproducing the results published in the paper. Note that Kondo's capabilities has advanced since the original accepted manuscript, and as a result the Evaluation section in the camera-ready paper will be different from the original version. The instructions here present the expected results in the updated Evaluation, and how to reproduce them.
+
+The main addition to Kondo is that Kondo now automatically generates a draft of the final proof (box 5 in Figure 6). As such, the user is only responsible for completing the proof of the synchronous protocol (box 5 in Figure 6).
+
+
+Kondo's goal is to relieve developer effort in verifying distributed systems. To evaluate this, we apply two metrics:
 
 1. The user should be responsible for writing fewer invariants
 2. The user should be responible for writing fewer lines of proof code
 
 The next two section detail how we obtain these numbers.
 
-Note that differs from paper, due to improvements. 
-
 ### Verifying Claim 1
 
-**TODO** **Claim:** Users write fewer invariants
+**Claim:** Users write fewer invariants when using Kondo. 
 
+To evaluate this claim, we compare the number of invariant clauses a user would have to manually derive and prove when using Kondo, compared to the baseline of not using Kondo. The table below presents the numbers.
 
 | protocol                   | without Kondo | with Kondo |
 |----------------------------|---------------|------------|
@@ -101,6 +105,35 @@ Note that differs from paper, due to improvements.
 | ShardedKV                  | 2             | 0          |
 | ShardedKV-Batched          | 2             | 0          |
 | Lock Server                | 7             | 1          |
+
+#### "With Kondo" Column
+
+The numbers in this table are all obtained through manual inspection. To derive the "with Kondo" figures for a protocol, look at `applicationProof.dfy` file in the `sync/` sub-directory, e.g., `kondoPrototypes/paxos/sync/applicationProof.dfy`. This file contains the proof of the synchronous protocol, and it's inductive invariant. The number of invariants clauses is found in the predicate `ProtocolInv(c: Constants, v: Variables)`. 
+
+Note that each clause in `ProtocolInv` may count as more than one invariant, should it contain more that one sub-clause. In that case, the actual number is marked as a comment. For example, the following `ProtocolInv` definition would show that 
+
+```C#
+// Protocol bundle: 4 clauses in total
+ghost predicate ProtocolInv(c: Constants, v: Variables)
+  requires v.WF(c)
+{
+  && Invariant_A(c, v)
+  && Invariant_B(c, v)
+  && Invariant_C(c, v)  // 2
+}
+```
+
+there are 4 clauses in total, as `Invariant_C` accounts for 2 of them.
+
+#### "Without Kondo" Column
+
+To derive the "without Kondo" figures for a protocol, we look at two files: 
+
+1. `applicationProof.dfy` file in the `manual/` sub-directory, e.g., `kondoPrototypes/paxos/manual/applicationProof.dfy`. This file contains a fully manual proof of the asynchronous protocol.
+2. `messageInvariants.dfy` file in the `manual/` sub-directory, e.g. `kondoPrototypes/paxos/manual/messageInvariants.dfy`. This file contains helper lemmas used in the final asynchronous protocol proof. 
+
+The total number of invariants clauses is found in the predicate `ProtocolInv(c: Constants, v: Variables)` in `applicationProof.dfy`, and predicate `MessageInv(c: Constants, v: Variables)` in `messageInvariants.dfy` (note that the conjunct `v.WF(c)` is always omitted from the count). 
+
 
 
 ### Verifying Claim 2

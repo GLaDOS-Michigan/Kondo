@@ -3,8 +3,8 @@ import os
 from file_sloc import count_sloc_between
 
 CSV_FILE = "protocols.csv"
-ROOT_PATH = "/Users/nudzhang/Documents/UMich2023sp/linear-dist.nosync/KondoPrototypes"
-OUTPUT_PATH = "/Users/nudzhang/Documents/UMich2023sp/linear-dist.nosync/KondoPrototypes/evaluation/sloc.csv"
+ROOT_PATH = "/Users/nudzhang/Documents/UMich2024sp/kondo/kondo-artifact.nosync/kondoPrototypes"
+OUTPUT_PATH = "/Users/nudzhang/Documents/UMich2024sp/kondo/kondo-artifact.nosync/kondoPrototypes/evaluation/sloc.csv"
 
 def analyze_protocol(file_path):
     with open(file_path, 'r') as csvfile:
@@ -16,12 +16,9 @@ def analyze_protocol(file_path):
             protocol = row[0]
 
             manual_proof = get_manual_proof_sloc(protocol)
-            sync_spec = get_sync_spec_sloc(protocol)
             sync_proof = get_sync_proof_sloc(protocol)
-            kondo_regular = get_kondo_regular_sloc(protocol)
-            kondo_proofdraft = get_kondo_proofdraft_sloc(protocol)
 
-            line = f"{protocol},{manual_proof},{sync_spec},{sync_proof},{kondo_regular},{kondo_proofdraft}"
+            line = f"{protocol},{manual_proof},{sync_proof}"
             res.append(line)
     write_to_file(OUTPUT_PATH, "\n".join(res))
 
@@ -34,8 +31,8 @@ def get_manual_proof_sloc(protocol):
     for fp in manual_file_paths:
         if os.path.isfile(fp):
             manual_sloc += count_sloc_between(fp, 1, 1000000)
-        else:
-            print(f"{fp} not found")
+        # else:
+        #     print(f"{fp} not found")
     return manual_sloc
 
 def get_sync_spec_sloc(protocol):

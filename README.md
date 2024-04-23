@@ -108,7 +108,7 @@ To evaluate this claim, we compare the number of invariant clauses a user would 
 
 #### "With Kondo" Column
 
-The numbers in this table are all obtained through manual inspection. To derive the "with Kondo" figures for a protocol, look at `applicationProof.dfy` file in the `sync/` sub-directory, e.g., `kondoPrototypes/paxos/sync/applicationProof.dfy`. This file contains the proof of the synchronous protocol, and it's inductive invariant. The number of invariants clauses is found in the predicate `ProtocolInv(c: Constants, v: Variables)`. 
+The numbers in this table are all obtained through manual inspection. To derive the "with Kondo" figures for a protocol, look at applicationProof.dfy file in the `sync/` sub-directory, e.g., `kondoPrototypes/paxos/sync/applicationProof.dfy`. This file contains the proof of the synchronous protocol, and it's inductive invariant. The number of invariants clauses is found in the predicate `ProtocolInv(c: Constants, v: Variables)`. 
 
 Note that each clause in `ProtocolInv` may count as more than one invariant, should it contain more that one sub-clause. In that case, the actual number is marked as a comment. For example, the following `ProtocolInv` definition would show that 
 
@@ -129,29 +129,40 @@ there are 4 clauses in total, as `Invariant_C` accounts for 2 of them.
 
 To derive the "without Kondo" figures for a protocol, we look at two files: 
 
-1. `applicationProof.dfy` file in the `manual/` sub-directory, e.g., `kondoPrototypes/paxos/manual/applicationProof.dfy`. This file contains a fully manual proof of the asynchronous protocol.
-2. `messageInvariants.dfy` file in the `manual/` sub-directory, e.g. `kondoPrototypes/paxos/manual/messageInvariants.dfy`. This file contains helper lemmas used in the final asynchronous protocol proof. 
+1. applicationProof.dfy file in the manual/ sub-directory, e.g., `kondoPrototypes/paxos/manual/applicationProof.dfy. This file contains a fully manual proof of the asynchronous protocol.
+2. messageInvariants.dfy file in the manual/ sub-directory, e.g. `kondoPrototypes/paxos/manual/messageInvariants.dfy`. This file contains helper lemmas used in the final asynchronous protocol proof. 
 
-The total number of invariants clauses is found in the predicate `ProtocolInv(c: Constants, v: Variables)` in `applicationProof.dfy`, and predicate `MessageInv(c: Constants, v: Variables)` in `messageInvariants.dfy` (note that the conjunct `v.WF(c)` is always omitted from the count). 
+The total number of invariants clauses is found in the predicate `ProtocolInv(c: Constants, v: Variables)` in applicationProof.dfy, and predicate `MessageInv(c: Constants, v: Variables)` in messageInvariants.dfy (note that the conjunct `v.WF(c)` is always omitted from the count). 
 
 
 
 ### Verifying Claim 2
 
-**Claim:** Users write fewer lines of proof code
+**Claim:** Users write fewer lines of proof code when using Kondo
+
+To evaluate this claim, we compare the number of lines of proof code a user would have to manually derive and prove when using Kondo, compared to the baseline of not using Kondo. The table below presents the numbers.
 
 | protocol                   | without Kondo | with Kondo |
 |----------------------------|---------------|------------|
 | Client-Server              | 93            | 40         |
 | Ring Leader Election       | 191           | 63         |
-| Simplified Leader Election | 125           | 94         |
+| Simplified Leader Election | 136           | 94         |
 | Two-Phase Commit           | 184           | 133        |
 | Paxos                      | 850           | 557        |
 | Flexible Paxos             | -             | 554        |
 | Distributed Lock           | 64            | 31         |
-| ShardedKV                  | 178           | 61         |
-| ShardedKV-Batched          | 178           | 31         |
+| ShardedKV                  | 172           | 61         |
+| ShardedKV-Batched          | 172           | 31         |
 | Lock Server                | 267           | 44         |
+
+To obtain these numbers,
+
+```
+cd kondoPrototypes/evaluation
+python3 eval.py
+```
+
+The output is written to file sloc.csv. 
 
 
 

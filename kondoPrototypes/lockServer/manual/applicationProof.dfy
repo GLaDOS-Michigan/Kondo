@@ -102,6 +102,7 @@ module LockServerProof {
     v.server[0].hasLock ==> NoClientOwnsLock(c, v)
   }
   
+  // Application bundle: 5 clauses in total
   ghost predicate ApplicationInv(c: Constants, v: Variables)
     requires v.WF(c)
   {

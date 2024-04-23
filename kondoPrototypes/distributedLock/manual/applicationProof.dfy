@@ -39,7 +39,7 @@ module ToylockProof {
     (forall msg | msg in v.network.sentMsgs :: !MsgInFlight(c, v, msg))
   }
 
-  
+  // Application bundle: 2 clauses in total
   ghost predicate ApplicationInv(c: Constants, v: Variables)
     requires v.WF(c)
   {

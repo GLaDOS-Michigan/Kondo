@@ -8,12 +8,12 @@ module ShardedKVProof {
   import opened DistributedSystem
   import opened Obligations
 
-  ghost predicate HostsCompleteKeys(c: Constants, v: Variables)
-   requires v.WF(c)
-  {
-    forall i, k: UniqueKey | c.ValidIdx(i)
-    :: v.hosts[i].HasKey(k)
-  }
+  // ghost predicate HostsCompleteKeys(c: Constants, v: Variables)
+  //  requires v.WF(c)
+  // {
+  //   forall i, k: UniqueKey | c.ValidIdx(i)
+  //   :: v.hosts[i].HasKey(k)
+  // }
 
   ghost predicate KeyInFlight(c: Constants, v: Variables, k: UniqueKey) 
     requires v.WF(c)
@@ -53,7 +53,8 @@ module ShardedKVProof {
     !KeyInFlight(c, v, k)
   }
 
-  
+
+  // Application bundle: 2 clauses in total
   ghost predicate ApplicationInv(c: Constants, v: Variables)
     requires v.WF(c)
   {

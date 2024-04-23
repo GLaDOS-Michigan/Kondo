@@ -14,10 +14,12 @@ ghost predicate ValidMessages(c: Constants, v: Variables)
        && (if msg.Grant? then c.ValidClientIdx(msg.Dst()) else msg.Dst() == 0)
   }
 
+
+// Message bundle: 2 clauses in total
 ghost predicate MessageInv(c: Constants, v: Variables)
 {
   && v.WF(c)
-  && ValidMessages(c, v)
+  && ValidMessages(c, v)  // 2
 }
 
 // Base obligation

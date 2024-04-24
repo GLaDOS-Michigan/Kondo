@@ -1,6 +1,6 @@
 # Kondo
 
-This is the code base for the Kondo prototype, as decribed in the OSDI'24 paper
+This is the code base for the Kondo prototype, as described in the OSDI'24 paper
 "Inductive Invariants That Spark Joy: Using Invariant Taxonomies to Streamline Distributed Systems Proofs".
 
 The paper introduces the concept of an Invariant Taxonomy that factors the invariants of a distributed protocol

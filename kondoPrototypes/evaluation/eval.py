@@ -11,7 +11,7 @@ def analyze_protocol(file_path):
     with open(file_path, 'r') as csvfile:
         csv_reader = csv.reader(csvfile)
         res = []
-        res.append("protocol,manual_proof,sync_spec,sync_proof,kondo_regular,kondo_proof_draft")
+        res.append("protocol,manual_proof,sync_proof")
 
         for row in csv_reader:
             protocol = row[0]

@@ -142,27 +142,33 @@ The total number of invariants clauses is found in the predicate `ProtocolInv(c:
 
 To evaluate this claim, we compare the number of lines of proof code a user would have to manually derive and prove when using Kondo, compared to the baseline of not using Kondo. The table below presents the numbers.
 
-| protocol                   | without Kondo | with Kondo |
-|----------------------------|---------------|------------|
-| Client-Server              | 93            | 40         |
-| Ring Leader Election       | 191           | 63         |
-| Simplified Leader Election | 136           | 94         |
-| Two-Phase Commit           | 184           | 133        |
-| Paxos                      | 850           | 557        |
-| Flexible Paxos             | -             | 554        |
-| Distributed Lock           | 64            | 31         |
-| ShardedKV                  | 172           | 61         |
-| ShardedKV-Batched          | 172           | 31         |
-| Lock Server                | 267           | 44         |
+| protocol                   | without Kondo | with Kondo | final modifications |
+|----------------------------|---------------|------------|---------------------|
+| Client-Server              | 93            | 40         | x                   |
+| Ring Leader Election       | 191           | 63         | x                   |
+| Simplified Leader Election | 136           | 94         | x |
+| Two-Phase Commit           | 184           | 133        | x |
+| Paxos                      | 850           | 557        | x |
+| Flexible Paxos             | -             | 554        | x |
+| Distributed Lock           | 64            | 31         | x |
+| ShardedKV                  | 172           | 61         | x |
+| ShardedKV-Batched          | 172           | 31         | x |
+| Lock Server                | 267           | 44         | x |
 
-To obtain these numbers,
+#### Columns 1 and 2
+
+These columns are simply a count in the number of lines of code in the respective proof files. For each protocol, "without Kondo" is the sum of source lines of code (SLOC) in the files `kondoPrototypes/<protocol>/manual/messageInvariants.dfy` and `kondoPrototypes/<protocol>/manual/applicationProof.dfy`. Meanwhile, "with Kondo" is the SLOC in the file `kondoPrototypes/<protocol>/sync/applicationProof.dfy`.
+
+To obtain these numbers, run
 
 ```
 cd kondoPrototypes/evaluation
 python3 eval.py
 ```
 
-The output is written to file sloc.csv. 
+The output is written to the CSV file sloc.csv. 
+
+#### "Final Modifications" Column
 
 
 

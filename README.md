@@ -77,7 +77,7 @@ One may also verify each version of each protocol individually, by running the `
 
 This section involves reproducing the results published in the paper. Note that Kondo's capabilities has advanced since the original accepted manuscript, and as a result the Evaluation section in the camera-ready paper will be different from the original version. The instructions here present the expected results in the updated Evaluation, and how to reproduce them.
 
-The main addition to Kondo is that Kondo now automatically generates a draft of the final proof (box 5 in Figure 6). As such, the user is only responsible for completing the proof of the synchronous protocol (box 5 in Figure 6).
+The main addition to Kondo is that Kondo now automatically generates a **draft** of the final proof (box 5 in Figure 6). As such, the user is only responsible for completing the proof of the synchronous protocol (box 5 in Figure 6).
 
 
 Kondo's goal is to relieve developer effort in verifying distributed systems. To evaluate this, we apply two metrics:
@@ -144,16 +144,16 @@ To evaluate this claim, we compare the number of lines of proof code a user woul
 
 | protocol                   | without Kondo | with Kondo | final modifications |
 |----------------------------|---------------|------------|---------------------|
-| Client-Server              | 93            | 40         | x                   |
-| Ring Leader Election       | 191           | 63         | x                   |
-| Simplified Leader Election | 136           | 94         | x |
-| Two-Phase Commit           | 184           | 133        | x |
-| Paxos                      | 850           | 557        | x |
-| Flexible Paxos             | -             | 554        | x |
-| Distributed Lock           | 64            | 31         | x |
-| ShardedKV                  | 172           | 61         | x |
-| ShardedKV-Batched          | 172           | 31         | x |
-| Lock Server                | 267           | 44         | x |
+| Client-Server              | 93            | 40         | 0                   |
+| Ring Leader Election       | 191           | 63         | 0                   |
+| Simplified Leader Election | 136           | 94         | 0                   |
+| Two-Phase Commit           | 184           | 133        | 19                  |
+| Paxos                      | 850           | 557        | 234                 |
+| Flexible Paxos             | -             | 554        | 242                 |
+| Distributed Lock           | 64            | 31         | 0                   |
+| ShardedKV                  | 172           | 61         | 7                   |
+| ShardedKV-Batched          | 172           | 31         | 0                   |
+| Lock Server                | 267           | 44         | 15                  |
 
 #### Columns 1 and 2
 
@@ -169,6 +169,18 @@ python3 eval.py
 The output is written to the CSV file sloc.csv. 
 
 #### "Final Modifications" Column
+
+This column counts the number of lines of proof code of lemmas that the user had to modify in the final **draft** proof that Kondo generated. These numbers are obtained through manual inspection.
+
+For each non-zero entry, the relevant file is `kondoPrototypes/<protocol>/async-kondo/applicationProof.dfy`. In this file, every modified lemma is commented with it's SLOC above its signature. E.g.,
+
+```C#
+// modified: 19 lines
+lemma InvNextAC3(c: Constants, v: Variables, v': Variables)
+	... 
+```
+
+means that the lemma `InvNextAC3` is modified (in Two-Phase Commit), and the lemma spans 19 lines. Each entry in the table is the sum of such lines in the respective proof files.
 
 
 

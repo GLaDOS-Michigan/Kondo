@@ -52,7 +52,7 @@ We begin with building our local version of Dafny that contains Kondo extensions
 	
 ### Verifying Protocols
 
-Now that Dafny is set up, we check that all 10 protocols in our evaluation passes the dafny verifier. 
+Now that Dafny is set up, we check that all 10 protocols in our evaluation passes the dafny verifier.
 
 ```bash
 cd kondoPrototypes/
@@ -66,12 +66,14 @@ This script runs the dafny verifier on each of the protocol, and takes about 5mi
 2. Sync: This is a synchronous proof of the protocol, and serves as the input to Kondo (step 1 in Figure 6)
 3. Kondo: This is the Kondo-generated asynchronous protocol
 
+> [!IMPORTANT]  
+> This step must be completed before moving on to the [Detailed Instructions](#detailed-instructions) section, as it produces auto-generated files required to complete the evaluation.
+
 One may also verify each version of each protocol individually, by running the `verify` script in the respective sub-directory for the protocol version. For instance:
 
 ```bash
 ./kondoPrototypes/clientServer/sync/verify
 ```
-
 
 ## Detailed Instructions
 
@@ -89,7 +91,7 @@ The next two section detail how we obtain these numbers.
 
 ### Verifying Claim 1
 
-**Claim:** Users write fewer invariants when using Kondo. 
+**Claim:** Users write fewer invariants when using Kondo.
 
 To evaluate this claim, we compare the number of invariant clauses a user would have to manually derive and prove when using Kondo, compared to the baseline of not using Kondo. The table below presents the numbers.
 
@@ -112,7 +114,7 @@ The numbers in this table are all obtained through manual inspection. To derive 
 
 Note that each clause in `ProtocolInv` may count as more than one invariant, should it contain more that one sub-clause. In that case, the actual number is marked as a comment. For example, the following `ProtocolInv` definition would show that 
 
-```C#
+```CS
 // Protocol bundle: 4 clauses in total
 ghost predicate ProtocolInv(c: Constants, v: Variables)
   requires v.WF(c)
@@ -161,7 +163,7 @@ These columns are simply a count in the number of lines of code in the respectiv
 
 To obtain these numbers, run
 
-```
+```bash
 cd kondoPrototypes/evaluation
 python3 eval.py
 ```
@@ -174,14 +176,10 @@ This column counts the number of lines of proof code of lemmas that the user had
 
 For each non-zero entry, the relevant file is `kondoPrototypes/<protocol>/async-kondo/applicationProof.dfy`. In this file, every modified lemma is commented with it's SLOC above its signature. E.g.,
 
-```C#
+```CS
 // modified: 19 lines
 lemma InvNextAC3(c: Constants, v: Variables, v': Variables)
 	... 
 ```
 
 means that the lemma `InvNextAC3` is modified (in Two-Phase Commit), and the lemma spans 19 lines. Each entry in the table is the sum of such lines in the respective proof files.
-
-
-
-

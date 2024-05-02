@@ -8,13 +8,13 @@ dafnyMsgInv="$dafny /msgInvs /ownerInvs"
 dafnyAsyncProof="$dafny /genAsyncProof"
 dafnyVerify="$dafny /timeLimit:20 /compile:0  /noNLarith /autoTriggers:1 /vcsCores:10"
 
-rm -f messageInvariantsAutogen.dfy monotonicityInvariantsAutogen.dfy applicationProofDraftAutogen.dfy
+
 
 # Generate Message Invariants and Monotonicity Invariants
-$dafnyMsgInv "distributedSystem.dfy" > autoInvs.log
+$dafnyMsgInv "$scriptpath/distributedSystem.dfy" > autoInvs.log
 
 # Generate Async proof draft
-$dafnyAsyncProof "../sync/applicationProof.dfy" > autoProof.log
+$dafnyAsyncProof "$scriptpath/../sync/applicationProof.dfy" > autoProof.log
 
 # Verify files. In this case, the generated draft is the final proof.
 files="$scriptpath/../../lib/* $scriptpath/../hosts.dfy $scriptpath/../types.dfy $scriptpath/distributedSystem.dfy $scriptpath/spec.dfy $scriptpath/monotonicityInvariantsAutogen.dfy $scriptpath/messageInvariantsAutogen.dfy $scriptpath/ownershipInvariantsAutogen.dfy $scriptpath/applicationProofDraftAutogen.dfy"

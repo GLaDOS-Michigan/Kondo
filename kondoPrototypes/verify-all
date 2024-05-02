@@ -3,6 +3,8 @@
 # Verifies all Kondo protocols
 # Takes about 5min on M3 MacBook Pro
 
+./clean
+
 # Client-Server
 
 echo "Verifying Client-Server (manual)"

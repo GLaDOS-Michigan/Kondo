@@ -8,13 +8,13 @@ dafnyMsgInv="$dafny /msgInvs"
 dafnyAsyncProof="$dafny /genAsyncProof"
 dafnyVerify="$dafny /timeLimit:30 /compile:0  /noNLarith /autoTriggers:1 /vcsCores:10"
 
-rm -f messageInvariantsAutogen.dfy monotonicityInvariantsAutogen.dfy applicationProofDraftAutogen.dfy
+
 
 # Generate Message Invariants and Monotonicity Invariants
-$dafnyMsgInv "distributedSystem.dfy" > autoInvs.log
+$dafnyMsgInv "$scriptpath/distributedSystem.dfy" > autoInvs.log
 
 # Generate Async proof draft
-$dafnyAsyncProof "../sync/applicationProof.dfy" > autoProof.log
+$dafnyAsyncProof "$scriptpath/../sync/applicationProof.dfy" > autoProof.log
 
 # Verify files
 

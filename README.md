@@ -36,13 +36,13 @@ We begin with building our local version of Dafny that contains Kondo extensions
 		* This can be done using brew: `brew install dotnet-sdk`,
 		* Or through a manual install [https://dotnet.microsoft.com/en-us/download/dotnet/6.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 	* [python3 and pip3 are needed but they are likely already part of the Mac installation]
-* Build Dafny. From the project root:
+2. Build Dafny. From the project root:
 
 	```bash
 	cd local-dafny
 	make
 	```
-* To check that Dafny runs as expected, run from the local-dafny directory:
+3. To check that Dafny runs as expected, run from the local-dafny directory:
 
 	```bash
 	 ./Scripts/dafny /compile:0 test.dfy

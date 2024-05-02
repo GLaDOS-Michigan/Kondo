@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# Set the root directory for searching files
+root_dir=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+
+# Find and delete files with the specified suffix
+suffix="Autogen.dfy"
+find "$root_dir" -type f -name "*$suffix" -exec rm {} \;
+
+# Find and delete files with the specified suffix
+suffix=".log"
+find "$root_dir" -type f -name "*$suffix" -exec rm {} \;

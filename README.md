@@ -100,7 +100,7 @@ To evaluate this claim, we compare the number of invariant clauses a user would 
 | Simplified Leader Election | 7             | 3          |
 | Two-Phase Commit           | 8             | 4          |
 | Paxos                      | 27            | 20         |
-| Flexible Paxos             | -             | 21         |
+| Flexible Paxos             | 27            | 21         |
 | Distributed Lock           | 2             | 0          |
 | ShardedKV                  | 2             | 0          |
 | ShardedKV-Batched          | 2             | 0          |
@@ -148,8 +148,8 @@ To evaluate this claim, we compare the number of lines of proof code a user woul
 | Ring Leader Election       | 191           | 63         | 0                   |
 | Simplified Leader Election | 136           | 94         | 0                   |
 | Two-Phase Commit           | 184           | 133        | 19                  |
-| Paxos                      | 850           | 557        | 234                 |
-| Flexible Paxos             | -             | 554        | 242                 |
+| Paxos                      | 856           | 557        | 234                 |
+| Flexible Paxos             | 856           | 554        | 242                 |
 | Distributed Lock           | 64            | 31         | 0                   |
 | ShardedKV                  | 172           | 61         | 7                   |
 | ShardedKV-Batched          | 172           | 31         | 0                   |

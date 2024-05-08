@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Verifies all Kondo protocols
 # Takes about 5min on M3 MacBook Pro

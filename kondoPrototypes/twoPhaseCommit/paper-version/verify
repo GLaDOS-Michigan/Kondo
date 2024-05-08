@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 dafny="/Users/nudzhang/installations/dafny-4.2.0/dafny /timeLimit:20 /compile:0  /noNLarith /autoTriggers:1 /vcsCores:10"
 

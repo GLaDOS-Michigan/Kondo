@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Set the root directory for searching files
 root_dir=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )

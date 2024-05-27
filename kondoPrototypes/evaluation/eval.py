@@ -11,15 +11,16 @@ def analyze_protocol(file_path):
     with open(file_path, 'r') as csvfile:
         csv_reader = csv.reader(csvfile)
         res = []
-        res.append("protocol,manual_proof,sync_proof")
+        res.append("protocol,sync_spec,manual_proof,sync_proof")
 
         for row in csv_reader:
             protocol = row[0]
 
+            sync_spec = get_sync_spec_sloc(protocol)
             manual_proof = get_manual_proof_sloc(protocol)
             sync_proof = get_sync_proof_sloc(protocol)
 
-            line = f"{protocol},{manual_proof},{sync_proof}"
+            line = f"{protocol},{sync_spec},{manual_proof},{sync_proof}"
             res.append(line)
     write_to_file(OUTPUT_PATH, "\n".join(res))
 

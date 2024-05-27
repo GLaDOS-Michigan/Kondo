@@ -278,7 +278,7 @@ lemma InvNextLearnedImpliesQuorumOfAccepts(c: Constants, v: Variables, v': Varia
 }
 
 
-lemma InvNextLearnerReceivedAcceptImpliesProposed(c: Constants, v: Variables, v': Variables)
+lemma {:timeLimitMultiplier 2} InvNextLearnerReceivedAcceptImpliesProposed(c: Constants, v: Variables, v': Variables)
   requires Inv(c, v)
   requires Next(c, v, v')
   ensures LearnerReceivedAcceptImpliesProposed(c, v')
@@ -429,7 +429,7 @@ lemma PromiseMessageExistence(c: Constants, v: Variables, i: int, ldr: LeaderId,
 }
 
 // modified: 58 lines
-lemma InvNextChosenImpliesProposingLeaderHearsChosenBallot(c: Constants, v: Variables, v': Variables) 
+lemma {:timeLimitMultiplier 2} InvNextChosenImpliesProposingLeaderHearsChosenBallot(c: Constants, v: Variables, v': Variables) 
   requires Inv(c, v)
   requires Next(c, v, v')
   requires LeaderHighestHeardToPromisedRangeHasNoAccepts(c, v')

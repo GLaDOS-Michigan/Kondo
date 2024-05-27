@@ -246,12 +246,11 @@ lemma InvNextLearnerValidReceivedAccepts(c: Constants, v: Variables, v': Variabl
   VariableNextProperties(c, v, v');
 }
 
-// modified: 29 lines
+// modified: 28 lines
 lemma InvNextLearnedImpliesQuorumOfAccepts(c: Constants, v: Variables, v': Variables) 
   requires v.WF(c)
   requires ValidMessages(c, v)
-  requires LearnerValidReceivedAccepts(c, v)
-  requires LearnedImpliesQuorumOfAccepts(c, v)
+  requires ProtocolInv(c, v)
   requires Next(c, v, v')
   ensures LearnedImpliesQuorumOfAccepts(c, v')
 {
@@ -355,7 +354,7 @@ lemma InvNextLeaderReceivedPromisesImpliesAcceptorState(c: Constants, v: Variabl
   VariableNextProperties(c, v, v');
 }
 
-// modified: 25 lines
+// modified: 23 lines
 // Needs receive invaraint skolemization
 lemma InvNextLeaderHighestHeardToPromisedRangeHasNoAccepts(c: Constants, v: Variables, v': Variables)
   requires Inv(c, v)
@@ -364,9 +363,7 @@ lemma InvNextLeaderHighestHeardToPromisedRangeHasNoAccepts(c: Constants, v: Vari
 { 
   forall ldr, acc, lnr, vb:ValBal, i | 
     && v'.ValidHistoryIdx(i)
-    && c.ValidLeaderIdx(ldr)
-    && c.ValidAcceptorIdx(acc)
-    && c.ValidLearnerIdx(lnr)
+    && c.ValidLeaderIdx(ldr) && c.ValidAcceptorIdx(acc) && c.ValidLearnerIdx(lnr)
     && vb in v'.History(i).learners[lnr].receivedAccepts.m
     && vb.b < ldr
     && v'.History(i).leaders[ldr].HeardAtMost(vb.b)
@@ -391,7 +388,7 @@ lemma AcceptMessageExistence(c: Constants, v: Variables, i: int, lnr:LearnerId, 
   requires c.ValidLearnerIdx(lnr)
   requires vb in v.History(i).learners[lnr].receivedAccepts.m
   requires LearnerHost.ReceiveAcceptTrigger(c.learners[lnr], v.History(i).learners[lnr], acc, vb)
-  requires ReceiveAcceptValidity(c, v)  // custom receive invariant
+  requires ReceiveAcceptValidity(c, v)
   ensures acceptMsg in v.network.sentMsgs
   ensures acceptMsg == Accept(vb, acc)
 {
@@ -399,7 +396,7 @@ lemma AcceptMessageExistence(c: Constants, v: Variables, i: int, lnr:LearnerId, 
   acceptMsg := Accept(vb, acc);
 }
 
-// modified: 27 lines
+// modified: 25 lines
 lemma PromiseMessageExistence(c: Constants, v: Variables, i: int, ldr: LeaderId, acc: AcceptorId) 
   returns (promiseMsg : Message)
   requires v.WF(c)
@@ -414,8 +411,7 @@ lemma PromiseMessageExistence(c: Constants, v: Variables, i: int, ldr: LeaderId,
             && promiseMsg.acc == acc
             && (promiseMsg.vbOpt.Some? ==> 
                 && v.History(i).leaders[ldr].highestHeardBallot.MNSome?
-                && promiseMsg.vbOpt.value.b <= v.History(i).leaders[ldr].highestHeardBallot.value
-            )
+                && promiseMsg.vbOpt.value.b <= v.History(i).leaders[ldr].highestHeardBallot.value)
 {
   reveal_ReceivePromiseValidity();
   promiseMsg :| && promiseMsg.Promise?
@@ -424,8 +420,7 @@ lemma PromiseMessageExistence(c: Constants, v: Variables, i: int, ldr: LeaderId,
                 && promiseMsg.acc == acc
                 && (promiseMsg.vbOpt.Some? ==> 
                     && v.History(i).leaders[ldr].highestHeardBallot.MNSome?
-                    && promiseMsg.vbOpt.value.b <= v.History(i).leaders[ldr].highestHeardBallot.value
-                );
+                    && promiseMsg.vbOpt.value.b <= v.History(i).leaders[ldr].highestHeardBallot.value);
 }
 
 // modified: 58 lines
@@ -454,7 +449,7 @@ lemma {:timeLimitMultiplier 2} InvNextChosenImpliesProposingLeaderHearsChosenBal
         // Note that proof is identical to sync case
         NewChosenOnlyInLearnerStep(c, v, v', dsStep);
         if ldr == dsStep.actor {  // if the leader in question is now taking a step
-          assert Chosen(c, v.Last(), vb);
+          assert Chosen(c, v.Last(), vb);  // trigger
           var choosingAccs := SupportingAcceptorsForChosen(c, v, vb);
           var h, h' := v.Last(), v'.Last();
           if h.leaders[ldr].HeardAtMost(vb.b) {
@@ -495,7 +490,7 @@ lemma {:timeLimitMultiplier 2} InvNextChosenImpliesProposingLeaderHearsChosenBal
   }
 }
 
-// modified: 36 lines
+// modified: 31 lines
 lemma InvNextChosenValImpliesAcceptorOnlyAcceptsVal(c: Constants, v: Variables, v': Variables)
   requires Inv(c, v)
   requires Next(c, v, v')
@@ -523,21 +518,16 @@ lemma InvNextChosenValImpliesAcceptorOnlyAcceptsVal(c: Constants, v: Variables, 
     if i == |v'.history| - 1 {
       var dsStep :| NextStep(c, v.Last(), v'.Last(), v.network, v'.network, dsStep);
       var actor, msgOps := dsStep.actor, dsStep.msgOps;
-      if dsStep.LeaderHostStep? {
+      if dsStep.LeaderHostStep? || (dsStep.AcceptorHostStep? && actor == acc) {
         NewChosenOnlyInLearnerStep(c, v, v', dsStep);
-      } else if dsStep.AcceptorHostStep? && actor == acc {
-        NewChosenOnlyInLearnerStep(c, v, v', dsStep);
-      } else {
-        if v'.History(i).acceptors[acc].acceptedVB.value.v != vb.v {
-          var ldr := v'.Last().acceptors[acc].acceptedVB.value.b;
-          LeaderHearsDifferentValueFromChosenImpliesFalse(c, v', ldr, vb);
-        }
+      } else if v'.History(i).acceptors[acc].acceptedVB.value.v != vb.v {
+        LeaderHearsDifferentValueFromChosenImpliesFalse(c, v', v'.Last().acceptors[acc].acceptedVB.value.b, vb);
       }
     }
   }
 }
 
-// modified: 32 lines
+// modified: 28 lines
 lemma InvNextChosenValImpliesLeaderOnlyHearsVal(c: Constants, v: Variables, v': Variables)
   requires Inv(c, v)
   requires Next(c, v, v')
@@ -560,14 +550,10 @@ lemma InvNextChosenValImpliesLeaderOnlyHearsVal(c: Constants, v: Variables, v': 
     VariableNextProperties(c, v, v');
     if i == |v'.history| - 1 {
       var dsStep :| NextStep(c, v.Last(), v'.Last(), v.network, v'.network, dsStep);
-      if dsStep.LeaderHostStep? {
+      if dsStep.LeaderHostStep? || dsStep.AcceptorHostStep? {
         NewChosenOnlyInLearnerStep(c, v, v', dsStep);
-      } else if dsStep.AcceptorHostStep? {
-        NewChosenOnlyInLearnerStep(c, v, v', dsStep);
-      } else {
-        if v'.History(i).leaders[ldrBal].Value() != vb.v {
-          LeaderHearsDifferentValueFromChosenImpliesFalse(c, v', ldrBal, vb);
-        }
+      } else if v'.History(i).leaders[ldrBal].Value() != vb.v {
+        LeaderHearsDifferentValueFromChosenImpliesFalse(c, v', ldrBal, vb);
       }
     }
   }

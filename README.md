@@ -168,7 +168,7 @@ cd kondoPrototypes/evaluation
 python3 eval.py
 ```
 
-The output is written to the CSV file sloc.csv. 
+The output is written to the CSV file sloc.csv.
 
 #### "Final Modifications" Column
 

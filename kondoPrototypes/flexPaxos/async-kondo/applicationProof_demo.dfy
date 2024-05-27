@@ -247,10 +247,9 @@ lemma InvNextLearnerValidReceivedAccepts(c: Constants, v: Variables, v': Variabl
   VariableNextProperties(c, v, v');
 }
 
-// modified: 28 lines
+// modified: 27 lines
 lemma InvNextLearnedImpliesQuorumOfAccepts(c: Constants, v: Variables, v': Variables) 
-  requires v.WF(c)
-  requires ValidMessages(c, v)  // From MessageInv
+  requires MessageInv(c, v) // From MessageInv
   requires ProtocolInv(c, v)
   requires Next(c, v, v')
   ensures LearnedImpliesQuorumOfAccepts(c, v')
@@ -287,7 +286,7 @@ lemma InvNextLearnerReceivedAcceptImpliesProposed(c: Constants, v: Variables, v'
   VariableNextProperties(c, v, v');
 }
 
-lemma InvNextLearnerReceivedAcceptImpliesAccepted(c: Constants, v: Variables, v': Variables)
+lemma {:timeLimitMultiplier 2} InvNextLearnerReceivedAcceptImpliesAccepted(c: Constants, v: Variables, v': Variables)
   requires Inv(c, v)
   requires LearnerReceivedAcceptImpliesAccepted(c, v)
   requires Next(c, v, v')
@@ -354,7 +353,7 @@ lemma InvNextLeaderReceivedPromisesImpliesAcceptorState(c: Constants, v: Variabl
   assert LeaderReceivedPromisesImpliesAcceptorState(c, v');
 }
 
-// modified: 25 lines
+// modified: 23 lines
 // Needs receive invaraint skolemization
 lemma InvNextLeaderHighestHeardToPromisedRangeHasNoAccepts(c: Constants, v: Variables, v': Variables)
   requires Inv(c, v)
@@ -363,9 +362,7 @@ lemma InvNextLeaderHighestHeardToPromisedRangeHasNoAccepts(c: Constants, v: Vari
 { 
   forall ldr, acc, lnr, vb:ValBal, i | 
     && v'.ValidHistoryIdx(i)
-    && c.ValidLeaderIdx(ldr)
-    && c.ValidAcceptorIdx(acc)
-    && c.ValidLearnerIdx(lnr)
+    && c.ValidLeaderIdx(ldr) && c.ValidAcceptorIdx(acc) && c.ValidLearnerIdx(lnr)
     && vb in v'.History(i).learners[lnr].receivedAccepts.m
     && vb.b < ldr
     && v'.History(i).leaders[ldr].HeardAtMost(vb.b)
@@ -397,7 +394,7 @@ lemma AcceptMessageExistence(c: Constants, v: Variables, i: int, lnr:LearnerId, 
   acceptMsg := Accept(vb, acc);
 }
 
-// modified: 26 lines
+// modified: 24 lines
 lemma PromiseMessageExistence(c: Constants, v: Variables, i: int, ldr: LeaderId, acc: AcceptorId) returns (promiseMsg : Message)
   requires v.WF(c)
   requires v.ValidHistoryIdx(i)
@@ -411,8 +408,7 @@ lemma PromiseMessageExistence(c: Constants, v: Variables, i: int, ldr: LeaderId,
             && promiseMsg.acc == acc
             && (promiseMsg.vbOpt.Some? ==> 
                 && v.History(i).leaders[ldr].highestHeardBallot.MNSome?
-                && promiseMsg.vbOpt.value.b <= v.History(i).leaders[ldr].highestHeardBallot.value
-            )
+                && promiseMsg.vbOpt.value.b <= v.History(i).leaders[ldr].highestHeardBallot.value)
 {
   reveal_ReceivePromiseValidity();
   promiseMsg :| && promiseMsg.Promise?
@@ -421,8 +417,7 @@ lemma PromiseMessageExistence(c: Constants, v: Variables, i: int, ldr: LeaderId,
                 && promiseMsg.acc == acc
                 && (promiseMsg.vbOpt.Some? ==> 
                     && v.History(i).leaders[ldr].highestHeardBallot.MNSome?
-                    && promiseMsg.vbOpt.value.b <= v.History(i).leaders[ldr].highestHeardBallot.value
-                );
+                    && promiseMsg.vbOpt.value.b <= v.History(i).leaders[ldr].highestHeardBallot.value);
 }
 
 // modified: 58 lines
@@ -493,7 +488,7 @@ lemma {:timeLimitMultiplier 2} InvNextChosenImpliesProposingLeaderHearsChosenBal
 }
 
 
-// modified: 36 lines
+// modified: 31 lines
 lemma InvNextChosenValImpliesAcceptorOnlyAcceptsVal(c: Constants, v: Variables, v': Variables)
   requires Inv(c, v)
   requires Next(c, v, v')
@@ -521,22 +516,17 @@ lemma InvNextChosenValImpliesAcceptorOnlyAcceptsVal(c: Constants, v: Variables, 
     if i == |v'.history| - 1 {
       var dsStep :| NextStep(c, v.Last(), v'.Last(), v.network, v'.network, dsStep);
       var actor, msgOps := dsStep.actor, dsStep.msgOps;
-      if dsStep.LeaderHostStep? {
+      if dsStep.LeaderHostStep? || (dsStep.AcceptorHostStep? && actor == acc) {
         NewChosenOnlyInLearnerStep(c, v, v', dsStep);
-      } else if dsStep.AcceptorHostStep? && actor == acc {
-        NewChosenOnlyInLearnerStep(c, v, v', dsStep);
-      } else {
-        if v'.History(i).acceptors[acc].acceptedVB.value.v != vb.v {
-          var ldr := v'.Last().acceptors[acc].acceptedVB.value.b;
-          LeaderHearsDifferentValueFromChosenImpliesFalse(c, v', ldr, vb);
-        }
+      } else if v'.History(i).acceptors[acc].acceptedVB.value.v != vb.v {
+        LeaderHearsDifferentValueFromChosenImpliesFalse(c, v', v'.Last().acceptors[acc].acceptedVB.value.b, vb);
       }
     }
   }
 }
 
 
-// modified: 32 lines
+// modified: 28 lines
 lemma InvNextChosenValImpliesLeaderOnlyHearsVal(c: Constants, v: Variables, v': Variables)
   requires Inv(c, v)
   requires Next(c, v, v')
@@ -559,14 +549,10 @@ lemma InvNextChosenValImpliesLeaderOnlyHearsVal(c: Constants, v: Variables, v': 
     VariableNextProperties(c, v, v');
     if i == |v'.history| - 1 {
       var dsStep :| NextStep(c, v.Last(), v'.Last(), v.network, v'.network, dsStep);
-      if dsStep.LeaderHostStep? {
+      if dsStep.LeaderHostStep? || dsStep.AcceptorHostStep?{
         NewChosenOnlyInLearnerStep(c, v, v', dsStep);
-      } else if dsStep.AcceptorHostStep? {
-        NewChosenOnlyInLearnerStep(c, v, v', dsStep);
-      } else {
-        if v'.History(i).leaders[ldrBal].Value() != vb.v {
-          LeaderHearsDifferentValueFromChosenImpliesFalse(c, v', ldrBal, vb);
-        }
+      } else if v'.History(i).leaders[ldrBal].Value() != vb.v {
+        LeaderHearsDifferentValueFromChosenImpliesFalse(c, v', ldrBal, vb);
       }
     }
   }
@@ -670,14 +656,11 @@ lemma SupportingAcceptorsForChosen(c: Constants, v: Variables, vb: ValBal)
   return supportingAccs;
 }
 
-// modified: 11 lines, the trigger had to be added
+// modified: 9 lines, the trigger had to be added
 lemma GetAcceptorSet(c: Constants, v: Variables) returns (accSet: set<AcceptorId>)
   requires v.WF(c)
-  ensures forall a: int
-  
- :: c.ValidAcceptorIdx(a) <==> a in accSet
+  ensures forall a: int :: c.ValidAcceptorIdx(a) <==> a in accSet
   ensures |accSet| == c.n
-  decreases c, v
 {
   accSet := set a: int | 0 <= a < |c.acceptors|;
   SetComprehensionSize(|c.acceptors|);
